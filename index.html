@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
     <style>
-        /* Variables de Color según DESIGN.md */
+        /* Variables de Color según DESIGN.md de Ubuntu */
         :root {
             --ubuntu-blue: #6699CC;
             --bright-blue: #2E96FF;
@@ -28,10 +28,11 @@
             margin: 0;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            line-height: 24px; /* Regla 9: Minimum line height */
         }
 
-        /* Estilos Geométricos (0px Radius) */
-        .u-card, .u-btn, .u-input, .u-alert { border-radius: 0px !important; }
+        /* Regla 2: 0px Border Radius */
+        .u-card, .u-btn, .u-input, .u-alert, .u-tag { border-radius: 0px !important; }
 
         .u-card {
             background-color: var(--dark-charcoal);
@@ -39,20 +40,21 @@
             padding: 32px;
             transition: border-color 200ms ease;
         }
-
         .u-card:hover { border-color: var(--ubuntu-blue); }
 
-        /* Tipografía específica según escala */
-        .u-display { font-size: 40px; font-weight: 550; line-height: 48px; letter-spacing: 0px; }
-        .u-heading-light { font-size: 40px; font-weight: 180; line-height: 48px; }
-        .u-heading-4 { font-size: 24px; font-weight: 275; line-height: 32px; }
+        /* Regla 1: Typography Hierarchy (Weights 180-550) */
+        .u-display { font-size: 40px; font-weight: 550; line-height: 48px; letter-spacing: -0.02em; }
+        .u-heading-light { font-size: 40px; font-weight: 300; line-height: 48px; }
+        .u-heading-4 { font-size: 24px; font-weight: 400; line-height: 32px; }
+        .u-label-caps { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--medium-gray); }
 
+        /* Regla 3: 56px Minimum Height */
         .u-btn-primary {
             background-color: var(--bright-blue);
             color: white;
             height: 56px;
             padding: 16px 32px;
-            font-weight: 400;
+            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             border: none;
@@ -62,7 +64,6 @@
             align-items: center;
             justify-content: center;
         }
-
         .u-btn-primary:hover { background-color: var(--ubuntu-green); }
         .u-btn-primary:active { transform: scale(0.98); background-color: #008013; }
 
@@ -76,10 +77,11 @@
             outline: none;
             font-size: 16px;
         }
-
+        /* Regla 7: Visible Focus States */
         .u-input:focus { 
             border-color: var(--ubuntu-blue); 
-            box-shadow: 0 0 0 2px rgba(102, 153, 204, 0.2); 
+            outline: 2px solid var(--ubuntu-blue);
+            outline-offset: 2px;
         }
 
         .u-alert-error {
@@ -95,10 +97,10 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Loader Personalizado */
+        /* Loader */
         .u-spinner {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border: 3px solid var(--charcoal);
             border-top: 3px solid var(--bright-blue);
             border-radius: 50% !important;
@@ -109,88 +111,93 @@
 </head>
 <body>
 
-    <!-- Header / Nav -->
+    <!-- Header / Nav (Regla 8: Responsive handling) -->
     <header class="h-[64px] bg-[#202020] border-b border-[#373737] flex justify-between items-center px-8 sticky top-0 z-50">
         <div class="flex items-center gap-3">
             <i class="fab fa-linux text-[#2E96FF] text-2xl"></i>
             <span class="text-lg font-medium tracking-tight uppercase">DistroMatch <span class="font-light text-[#6699CC]">PRO</span></span>
         </div>
         <div id="auth-controls" class="hidden flex items-center gap-6">
-            <span id="user-display" class="text-[10px] font-bold text-[#808080] uppercase tracking-widest"></span>
-            <button id="btn-logout" class="text-[10px] font-bold text-[#C7162B] uppercase hover:underline">Cerrar Sesión</button>
+            <span id="user-display" class="u-label-caps"></span>
+            <button id="btn-logout" class="u-label-caps text-[#C7162B] hover:underline cursor-pointer bg-transparent border-none">Cerrar Sesión</button>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-12">
+    <main class="max-w-6xl mx-auto px-6 py-12">
         
-        <!-- PANTALLA 1: CARGA INICIAL (CON TIMEOUT) -->
+        <!-- PANTALLA 1: CARGA INICIAL -->
         <section id="view-loading" class="view-section active flex flex-col items-center justify-center min-h-[60vh]">
-            <div class="u-spinner mb-6"></div>
-            <p class="text-[10px] font-bold tracking-[0.3em] text-[#6699CC] uppercase animate-pulse">Sincronizando con la red central...</p>
-            <p id="debug-status" class="mt-4 text-[9px] text-gray-600 uppercase tracking-widest">Iniciando protocolo de conexión...</p>
+            <div class="u-spinner mb-8"></div>
+            <p class="u-label-caps text-[#6699CC] animate-pulse">Sincronizando con la red central de Ubuntu</p>
+            <div id="debug-status" class="mt-6 text-[9px] text-[#444] font-mono border border-[#333] p-4 w-full max-w-sm text-center">
+                Iniciando protocolo de conexión...
+            </div>
         </section>
 
-        <!-- PANTALLA 2: ACCESO RESTRINGIDO -->
+        <!-- PANTALLA 2: ACCESO RESTRINGIDO (GATE) -->
         <section id="view-gate" class="view-section max-w-md mx-auto">
             <div class="u-card">
                 <h1 class="u-display mb-2">Acceso Admin</h1>
-                <p class="text-[#808080] text-sm mb-8">Introduzca sus credenciales para gestionar el repositorio oficial de distribuciones.</p>
+                <p class="text-[#808080] text-sm mb-10">Autenticación requerida para realizar cambios en el kernel del repositorio.</p>
                 
-                <div id="login-error" class="hidden u-alert-error mb-6 text-xs"></div>
+                <div id="login-error" class="hidden u-alert-error mb-8 text-xs font-medium"></div>
 
-                <form id="login-form" class="space-y-5">
+                <form id="login-form" class="space-y-6">
                     <div>
-                        <label class="text-sm font-medium mb-2 block">Identificador de Usuario</label>
-                        <input type="email" id="email" class="u-input" placeholder="usuario@empresa.com" required>
+                        <label class="u-label-caps mb-2 block">Email Corporativo</label>
+                        <input type="email" id="email" class="u-input" placeholder="admin@distromatch.io" required>
                     </div>
                     <div>
-                        <label class="text-sm font-medium mb-2 block">Token de Seguridad</label>
+                        <label class="u-label-caps mb-2 block">Token de Acceso</label>
                         <input type="password" id="pass" class="u-input" placeholder="••••••••" required>
                     </div>
-                    <button type="submit" id="btn-login" class="u-btn-primary w-full mt-4">Desbloquear Consola</button>
+                    <button type="submit" id="btn-login" class="u-btn-primary w-full mt-4">Validar Credenciales</button>
                 </form>
             </div>
-            <p class="text-center mt-12 text-[9px] text-[#444] font-bold uppercase tracking-[0.4em]">Secure Distribution Node v2.5.1</p>
+            <p class="text-center mt-12 text-[9px] text-[#444] font-bold uppercase tracking-[0.4em]">Node Protocol v2.5.1-Stable</p>
         </section>
 
         <!-- PANTALLA 3: PANEL DE ADMINISTRACIÓN -->
-        <section id="view-admin" class="view-section space-y-10">
-            <div class="flex justify-between items-end">
+        <section id="view-admin" class="view-section">
+            <div class="flex justify-between items-end mb-12">
                 <div>
-                    <h1 class="u-heading-light">Gestión de Repositorio</h1>
-                    <p class="text-[#808080] text-sm">Añada o modifique distribuciones Linux en tiempo real.</p>
+                    <h1 class="u-heading-light">Repositorio Central</h1>
+                    <p class="text-[#808080] text-sm mt-2">Gestión de activos digitales y distribuciones en tiempo real.</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Formulario -->
-                <div class="lg:col-span-1">
-                    <div class="u-card">
-                        <h3 class="u-heading-3 mb-6 uppercase text-xs tracking-widest text-[#6699CC]">Editor de Distro</h3>
-                        <form id="distro-form" class="space-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Columna Editor -->
+                <div class="lg:col-span-4">
+                    <div class="u-card sticky top-24">
+                        <h3 class="u-label-caps text-[#6699CC] mb-8">Editor de Registro</h3>
+                        <form id="distro-form" class="space-y-5">
                             <input type="hidden" id="edit-id">
                             <div>
-                                <label class="text-[12px] uppercase font-bold text-[#808080] mb-2 block">Nombre</label>
-                                <input type="text" id="distro-name" class="u-input !h-12" placeholder="Ej: Fedora Workstation" required>
+                                <label class="u-label-caps mb-2 block">Nombre Distribución</label>
+                                <input type="text" id="distro-name" class="u-input" placeholder="Ej: Ubuntu 24.04 LTS" required>
                             </div>
                             <div>
-                                <label class="text-[12px] uppercase font-bold text-[#808080] mb-2 block">Descripción</label>
-                                <textarea id="distro-desc" class="u-input !h-24 py-3" placeholder="Breve resumen técnico..." required></textarea>
+                                <label class="u-label-caps mb-2 block">Resumen Técnico</label>
+                                <textarea id="distro-desc" class="u-input !h-32 py-3 resize-none" placeholder="Descripción detallada..." required></textarea>
                             </div>
                             <div>
-                                <label class="text-[12px] uppercase font-bold text-[#808080] mb-2 block">Tags (CPU, RAM)</label>
-                                <input type="text" id="distro-tags" class="u-input !h-12" placeholder="Ej: High, Mid, x64" required>
+                                <label class="u-label-caps mb-2 block">Etiquetas (Separar con comas)</label>
+                                <input type="text" id="distro-tags" class="u-input" placeholder="LTS, x64, GNOME">
                             </div>
-                            <button type="submit" id="btn-save" class="u-btn-primary w-full text-sm">Sincronizar Datos</button>
+                            <button type="submit" id="btn-save" class="u-btn-primary w-full mt-4">Guardar en la Nube</button>
                         </form>
                     </div>
                 </div>
 
-                <!-- Lista -->
-                <div class="lg:col-span-2 space-y-4">
-                    <h3 class="text-xs font-bold text-[#808080] uppercase tracking-widest px-2">Registros Activos</h3>
+                <!-- Columna Lista -->
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="flex items-center justify-between px-2 mb-4">
+                        <h3 class="u-label-caps">Nodos Activos en Repositorio</h3>
+                        <span id="record-count" class="text-[9px] font-bold text-[#6699CC]">0 REGISTROS</span>
+                    </div>
                     <div id="distro-list" class="space-y-4">
-                        <!-- Items dinámicos -->
+                        <!-- Items inyectados por JS -->
                     </div>
                 </div>
             </div>
@@ -206,101 +213,103 @@
         // --- SISTEMA DE DIAGNÓSTICO ---
         const log = (msg, type = 'info') => {
             const icons = { info: '🔵', success: '🟢', error: '🔴', warn: '🟡' };
-            console.log(`${icons[type]} [Firebase Debug]: ${msg}`);
+            console.log(`${icons[type]} [DistroMatch-System]: ${msg}`);
             const debugEl = document.getElementById('debug-status');
             if (debugEl) debugEl.innerText = msg;
         };
 
-        // Configuración de Entorno
-        const firebaseConfig = JSON.parse(__firebase_config);
-        log("Iniciando aplicación Firebase...", 'info');
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-pro-final';
+        // --- CONFIGURACIÓN BLINDADA (Previene ReferenceError) ---
+        let app, auth, db, appId;
+        let isFirebaseReady = false;
 
-        let distros = [];
-        let unsubscribeStore = null;
-        let isAuthResolved = false;
-
-        // Función Navegación de Vistas
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                const config = JSON.parse(__firebase_config);
+                app = initializeApp(config);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-pro-v1';
+                isFirebaseReady = true;
+                log("Servicios de Firebase vinculados.", 'success');
+            } else {
+                throw new Error("Variable __firebase_config no detectada. Verifique el entorno.");
+            }
+        } catch (e) {
+            log(e.message, 'error');
+            document.getElementById('debug-status').innerHTML = `<span class="text-red-500 font-bold">ERROR CRÍTICO:</span> ${e.message}`;
         }
 
-        // --- SISTEMA DE ARRANQUE BLINDADO ---
-        const authTimeout = setTimeout(() => {
-            if (!isAuthResolved) {
-                log("Tiempo de espera agotado. Forzando login.", 'warn');
-                showView('view-gate');
-            }
-        }, 3500);
+        const showView = (id) => {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        };
 
-        onAuthStateChanged(auth, (user) => {
-            isAuthResolved = true;
-            clearTimeout(authTimeout);
+        // --- MANEJO DE ESTADO Y AUTH ---
+        let distros = [];
+        let unsubscribeStore = null;
 
-            if (user) {
-                log(`Usuario detectado: ${user.email}`, 'success');
-                document.getElementById('auth-controls').classList.remove('hidden');
-                document.getElementById('user-display').innerText = user.email;
-                showView('view-admin');
-                initDataSync();
-            } else {
-                log("No hay sesión activa. Dirigiendo a Gate.", 'info');
-                document.getElementById('auth-controls').classList.add('hidden');
-                showView('view-gate');
-                if (unsubscribeStore) unsubscribeStore();
-            }
-        });
+        if (isFirebaseReady) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    log(`Sesión Activa: ${user.email}`, 'success');
+                    document.getElementById('auth-controls').classList.remove('hidden');
+                    document.getElementById('user-display').innerText = user.email;
+                    showView('view-admin');
+                    initDataSync();
+                } else {
+                    log("Sesión inactiva. Solicitando acceso.", 'info');
+                    document.getElementById('auth-controls').classList.add('hidden');
+                    showView('view-gate');
+                    if (unsubscribeStore) unsubscribeStore();
+                }
+            });
+        }
 
-        // Autenticación Manual
+        // Login Handler
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!isFirebaseReady) return;
+
             const btn = document.getElementById('btn-login');
             const errDiv = document.getElementById('login-error');
             
             btn.disabled = true;
-            btn.innerText = "Verificando...";
+            btn.innerText = "Sincronizando...";
             errDiv.classList.add('hidden');
 
             const email = document.getElementById('email').value;
             const pass = document.getElementById('pass').value;
 
-            log(`Intentando acceso para: ${email}`, 'info');
-
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
-                log("Acceso concedido satisfactoriamente.", 'success');
+                log("Acceso autorizado.", 'success');
             } catch (err) {
-                log(`Fallo de acceso: ${err.code}`, 'error');
-                errDiv.innerText = `Error [${err.code}]: Acceso denegado. Verifique su token e identidad.`;
+                log(`Error: ${err.code}`, 'error');
+                errDiv.innerText = `FALLO DE SEGURIDAD: Credenciales no válidas (${err.code})`;
                 errDiv.classList.remove('hidden');
                 btn.disabled = false;
-                btn.innerText = "Desbloquear Consola";
+                btn.innerText = "Validar Credenciales";
             }
         });
 
-        // Logout
+        // Logout Handler
         document.getElementById('btn-logout').onclick = () => {
-            log("Cerrando sesión...", 'info');
+            log("Cerrando sesión de usuario...", 'info');
             signOut(auth);
         };
 
-        // --- GESTIÓN DE DATOS ---
+        // --- SINCRONIZACIÓN DE FIRESTORE ---
         function initDataSync() {
-            log("Iniciando sincronización de datos Firestore...", 'info');
+            log("Sincronizando Repositorio Central...", 'info');
             const path = collection(db, 'artifacts', appId, 'public', 'data', 'distros');
             
             unsubscribeStore = onSnapshot(path, (snap) => {
-                log(`Datos recibidos: ${snap.size} registros encontrados.`, 'success');
+                log(`Transmisión de datos: ${snap.size} registros.`, 'success');
                 distros = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                document.getElementById('record-count').innerText = `${snap.size} REGISTROS ACTIVOS`;
                 renderDistros();
             }, (error) => {
-                log(`Error en Firestore: ${error.message}`, 'error');
-                console.error(error);
+                log(`Error de lectura: ${error.message}`, 'error');
             });
         }
 
@@ -311,25 +320,22 @@
             const data = {
                 name: document.getElementById('distro-name').value,
                 desc: document.getElementById('distro-desc').value,
-                tags: document.getElementById('distro-tags').value.split(',').map(t => t.trim()),
-                timestamp: serverTimestamp()
+                tags: document.getElementById('distro-tags').value.split(',').map(t => t.trim()).filter(t => t !== ""),
+                updatedAt: serverTimestamp()
             };
 
             try {
-                log("Enviando datos al repositorio central...", 'info');
+                log("Escribiendo en Repositorio...", 'info');
                 if (id) {
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id), data);
-                    log("Registro actualizado.", 'success');
                 } else {
                     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'distros'), data);
-                    log("Nuevo registro creado.", 'success');
                 }
                 distroForm.reset();
                 document.getElementById('edit-id').value = "";
-                document.getElementById('btn-save').innerText = "Sincronizar Datos";
+                document.getElementById('btn-save').innerText = "Guardar en la Nube";
             } catch (err) {
-                log(`Error al guardar: ${err.message}`, 'error');
-                alert("Error al guardar: " + err.message);
+                log(`Error de escritura: ${err.message}`, 'error');
             }
         };
 
@@ -337,25 +343,26 @@
             const container = document.getElementById('distro-list');
             if (distros.length === 0) {
                 container.innerHTML = `
-                    <div class="u-card text-center py-12 border-dashed">
-                        <p class="text-[#808080] text-sm">El repositorio está vacío.</p>
+                    <div class="u-card border-dashed flex flex-col items-center py-16 opacity-50">
+                        <i class="fas fa-database mb-4 text-2xl text-[#808080]"></i>
+                        <p class="u-label-caps">Repositorio Vacío</p>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = distros.map(d => `
-                <div class="u-card !p-6 flex justify-between items-center group">
-                    <div>
-                        <h4 class="text-sm font-bold uppercase tracking-wider mb-1">${d.name}</h4>
-                        <p class="text-[11px] text-[#808080] mb-3">${d.desc}</p>
-                        <div class="flex gap-2">
-                            ${d.tags.map(t => `<span class="text-[9px] font-bold px-2 py-0.5 bg-[#1A1A1A] text-[#2E96FF] border border-[#373737] uppercase">${t}</span>`).join('')}
+                <div class="u-card flex flex-col md:flex-row justify-between items-start md:items-center gap-6 group">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold group-hover:text-[#2E96FF] transition-colors mb-1">${d.name}</h4>
+                        <p class="text-sm text-[#808080] mb-4 line-clamp-2">${d.desc}</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${d.tags.map(t => `<span class="bg-[#2F2F2F] text-[#6699CC] text-[9px] font-bold px-2 py-1 uppercase tracking-tighter border border-[#373737]">${t}</span>`).join('')}
                         </div>
                     </div>
-                    <div class="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="window.editItem('${d.id}')" class="text-[10px] font-bold text-[#6699CC] uppercase tracking-widest hover:text-white">Editar</button>
-                        <button onclick="window.deleteItem('${d.id}')" class="text-[10px] font-bold text-[#C7162B] uppercase tracking-widest hover:text-white">Eliminar</button>
+                    <div class="flex gap-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="window.editItem('${d.id}')" class="u-label-caps text-[#6699CC] hover:text-white cursor-pointer bg-transparent border-none">Editar</button>
+                        <button onclick="window.deleteItem('${d.id}')" class="u-label-caps text-[#C7162B] hover:text-white cursor-pointer bg-transparent border-none">Eliminar</button>
                     </div>
                 </div>
             `).join('');
@@ -372,13 +379,13 @@
         };
 
         window.deleteItem = async (id) => {
-            if (confirm("¿Confirmar eliminación del repositorio central?")) {
+            if (confirm("¿Confirmar eliminación permanente del nodo en el Repositorio Central?")) {
                 try {
-                    log(`Eliminando registro: ${id}`, 'info');
+                    log(`Eliminando registro: ${id}`, 'warn');
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id));
-                    log("Registro eliminado.", 'success');
+                    log("Registro purgado con éxito.", 'success');
                 } catch (err) {
-                    log(`Fallo al eliminar: ${err.message}`, 'error');
+                    log(`Error al eliminar: ${err.message}`, 'error');
                 }
             }
         };
