@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DistroMatch - Tu Linux Ideal</title>
+    <title>DistroMatch Pro - Gestión de Distros</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -14,281 +14,406 @@
         .step-content.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .radio-card:checked + label { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-200 min-h-screen">
+<body class="bg-slate-950 text-slate-200 min-h-screen pb-20">
 
     <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="location.reload()">
             <div class="bg-blue-600 p-2 rounded-2xl shadow-lg shadow-blue-500/30">
                 <i class="fab fa-linux text-white text-3xl"></i>
             </div>
             <div>
                 <span class="text-2xl font-black tracking-tighter block leading-none">DistroMatch</span>
-                <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Linux Finder</span>
+                <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Database Cloud</span>
             </div>
         </div>
-        <div id="step-indicator" class="text-sm font-medium text-slate-500 uppercase tracking-widest">Paso 1 de 3</div>
+        <button id="toggle-admin" class="text-xs bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-full border border-slate-700 transition-all">
+            <i class="fas fa-lock-open mr-2"></i> MODO ADMIN
+        </button>
     </nav>
 
     <main class="max-w-4xl mx-auto px-4 py-8">
-        <!-- Contenedor Principal -->
-        <div class="glass rounded-3xl p-8 shadow-2xl">
-            
+        
+        <!-- AVISO DE ERROR DE PERMISOS -->
+        <div id="error-banner" class="hidden mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-2xl text-red-400 text-sm flex items-center gap-3">
+            <i class="fas fa-exclamation-triangle text-xl"></i>
+            <div>
+                <p class="font-bold">Error de Permisos en Firebase</p>
+                <p>Asegúrate de configurar las <b>Rules</b> en tu consola de Firestore como: <code class="bg-red-900/30 px-1 rounded">allow read, write: if true;</code> (para desarrollo).</p>
+            </div>
+        </div>
+
+        <!-- VISTA DE USUARIO (WIZARD) -->
+        <div id="user-view" class="glass rounded-3xl p-8 shadow-2xl">
             <form id="wizard-form">
+                <div id="step-indicator" class="text-[10px] text-blue-400 font-bold uppercase tracking-[0.2em] mb-4">Paso 1 de 3</div>
+                
+                <!-- Paso 1: Hardware -->
                 <div class="step-content active" id="step-1">
-                    <h2 class="text-3xl font-bold mb-2">Hablemos de potencia</h2>
-                    <p class="text-slate-400 mb-8">Hemos detectado algunos datos, pero confírmalos tú mismo.</p>
-                    
+                    <h2 class="text-3xl font-bold mb-2">Potencia del Equipo</h2>
+                    <p class="text-slate-400 mb-8">Ajusta según las especificaciones de tu máquina.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- RAM -->
                         <div class="space-y-3">
-                            <label class="block text-sm font-semibold text-blue-400 uppercase">Memoria RAM</label>
-                            <select name="ram" id="ram-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500 transition-all">
-                                <option value="low">Menos de 4 GB (Antiguo)</option>
-                                <option value="mid">4 GB - 8 GB (Estándar)</option>
-                                <option value="high" selected>16 GB o más (Moderno)</option>
+                            <label class="block text-sm font-semibold text-blue-400 uppercase">RAM</label>
+                            <select name="ram" id="ram-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500">
+                                <option value="low">Baja (< 4GB)</option>
+                                <option value="mid">Media (8GB)</option>
+                                <option value="high" selected>Alta (16GB+)</option>
                             </select>
                         </div>
-                        <!-- CPU -->
                         <div class="space-y-3">
-                            <label class="block text-sm font-semibold text-blue-400 uppercase">Procesador (CPU)</label>
-                            <select name="cpu" id="cpu-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500 transition-all">
-                                <option value="low">Baja gama (Atom, Celeron, Core 2 Duo)</option>
-                                <option value="mid">Gama Media (i3, i5, Ryzen 3/5)</option>
-                                <option value="high" selected>Gama Alta (i7, i9, Ryzen 7/9)</option>
+                            <label class="block text-sm font-semibold text-blue-400 uppercase">CPU</label>
+                            <select name="cpu" id="cpu-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500">
+                                <option value="low">Baja (Atom/Core2Duo)</option>
+                                <option value="mid">Media (i3/i5/R3)</option>
+                                <option value="high" selected>Alta (i7/i9/R7)</option>
                             </select>
                         </div>
-                    </div>
-                    
-                    <div class="mt-8 p-4 bg-blue-500/10 rounded-xl border border-blue-500/20 flex items-center gap-4">
-                        <i class="fas fa-robot text-blue-400"></i>
-                        <p class="text-sm text-blue-200">
-                            Auto-detección: Tu sistema parece tener <span id="auto-cpu" class="font-bold">?</span> núcleos y unos <span id="auto-ram" class="font-bold">?</span> GB de RAM.
-                        </p>
                     </div>
                 </div>
 
+                <!-- Paso 2: GPU -->
                 <div class="step-content" id="step-2">
-                    <h2 class="text-3xl font-bold mb-2">¿Y los gráficos?</h2>
-                    <p class="text-slate-400 mb-8">Esto determina qué drivers necesitaremos pre-instalar.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <h2 class="text-3xl font-bold mb-2">Gráficos</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                         <input type="radio" name="gpu" value="intel" id="gpu-intel" class="radio-card hidden" checked>
-                        <label for="gpu-intel" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all">
+                        <label for="gpu-intel" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
                             <i class="fas fa-microchip text-3xl mb-3"></i>
-                            <span class="font-bold text-center text-sm uppercase">Intel / Integrada</span>
+                            <span class="font-bold text-sm uppercase">Intel</span>
                         </label>
-
                         <input type="radio" name="gpu" value="nvidia" id="gpu-nvidia" class="radio-card hidden">
-                        <label for="gpu-nvidia" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all">
+                        <label for="gpu-nvidia" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
                             <i class="fab fa-envira text-3xl mb-3 text-green-500"></i>
-                            <span class="font-bold text-center text-sm uppercase">NVIDIA (Geforce)</span>
+                            <span class="font-bold text-sm uppercase">NVIDIA</span>
                         </label>
-
                         <input type="radio" name="gpu" value="amd" id="gpu-amd" class="radio-card hidden">
-                        <label for="gpu-amd" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all">
+                        <label for="gpu-amd" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
                             <i class="fas fa-bolt text-3xl mb-3 text-red-500"></i>
-                            <span class="font-bold text-center text-sm uppercase">AMD (Radeon)</span>
+                            <span class="font-bold text-sm uppercase">AMD</span>
                         </label>
                     </div>
                 </div>
 
+                <!-- Paso 3: Objetivo -->
                 <div class="step-content" id="step-3">
-                    <h2 class="text-3xl font-bold mb-2">¿Cuál es tu misión?</h2>
-                    <p class="text-slate-400 mb-8">Dinos qué planeas hacer principalmente en Linux.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- ... existing goal cards ... -->
-                        <input type="radio" name="goal" value="media" id="goal-media" class="radio-card hidden">
-                        <label for="goal-media" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
-                            <i class="fas fa-film text-2xl text-red-400 w-10 text-center"></i>
-                            <div>
-                                <p class="font-bold">Diseño / Media</p>
-                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Edición Video, Audio, Arte</p>
-                            </div>
+                    <h2 class="text-3xl font-bold mb-2">¿Para qué lo usarás?</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <input type="radio" name="goal" value="casual" id="goal-casual" class="radio-card hidden" checked>
+                        <label for="goal-casual" class="p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
+                            <p class="font-bold">Uso Diario / Ofimática</p>
                         </label>
-
-                        <input type="radio" name="goal" value="recovery" id="goal-recovery" class="radio-card hidden">
-                        <label for="goal-recovery" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
-                            <i class="fas fa-life-ring text-2xl text-emerald-400 w-10 text-center"></i>
-                            <div>
-                                <p class="font-bold">Recuperación / Rescate</p>
-                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Reparar PCs, Forense, Discos</p>
-                            </div>
+                        <input type="radio" name="goal" value="game" id="goal-game" class="radio-card hidden">
+                        <label for="goal-game" class="p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
+                            <p class="font-bold">Gaming</p>
+                        </label>
+                        <input type="radio" name="goal" value="dev" id="goal-dev" class="radio-card hidden">
+                        <label for="goal-dev" class="p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
+                            <p class="font-bold">Programación</p>
+                        </label>
+                        <input type="radio" name="goal" value="media" id="goal-media" class="radio-card hidden">
+                        <label for="goal-media" class="p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-blue-500/50 transition-all">
+                            <p class="font-bold">Diseño / Multimedia</p>
                         </label>
                     </div>
                 </div>
 
                 <div class="mt-12 flex justify-between gap-4">
-                    <button type="button" id="prev-btn" class="hidden px-8 py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
-                        Atrás
-                    </button>
-                    <button type="button" id="next-btn" class="ml-auto px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/20">
-                        Siguiente paso
-                    </button>
+                    <button type="button" id="prev-btn" class="hidden px-8 py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700">Atrás</button>
+                    <button type="button" id="next-btn" class="ml-auto px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-500 shadow-lg shadow-blue-500/20">Siguiente</button>
                 </div>
             </form>
 
-            <div id="results-view" class="hidden text-center py-4">
-                <div class="mb-8">
-                    <h2 class="text-4xl font-extrabold text-white mb-2">¡Tu Distro Perfecta!</h2>
-                    <p class="text-slate-400 uppercase tracking-widest text-sm">Basado en tu perfil de hardware y uso</p>
+            <!-- VISTA DE RESULTADOS -->
+            <div id="results-view" class="hidden py-4">
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-extrabold text-white mb-2">Recomendación Pro</h2>
+                    <div id="main-result-container"></div>
                 </div>
-
-                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-3xl shadow-2xl relative overflow-hidden text-left mb-8">
-                    <div class="absolute -right-10 -bottom-10 text-9xl text-white/10 rotate-12">
-                        <i class="fas fa-linux"></i>
-                    </div>
-                    <div class="relative z-10">
-                        <span id="res-badge" class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-wider">Altamente Recomendada</span>
-                        <h3 id="res-name" class="text-5xl font-black mb-4">Pop!_OS</h3>
-                        <p id="res-desc" class="text-lg text-blue-50 max-w-lg mb-8">La mejor opción para gaming con NVIDIA. Viene con los drivers preinstalados y un gestor de ventanas excelente para la productividad.</p>
-                        
-                        <div class="flex flex-wrap gap-4">
-                            <a href="#" id="res-link" target="_blank" class="bg-white text-blue-900 px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform flex items-center gap-2">
-                                <i class="fas fa-download"></i> Descargar ISO
-                            </a>
-                            <button onclick="location.reload()" class="bg-blue-800/50 border border-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-800 transition-all">
-                                <i class="fas fa-redo"></i> Volver a empezar
-                            </button>
-                        </div>
-                    </div>
+                <div class="border-t border-slate-800 pt-8">
+                    <h4 class="font-bold text-slate-500 uppercase text-xs mb-6 tracking-widest text-center">Otras alternativas en la base de datos</h4>
+                    <div id="alternatives-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
-
-                <div class="text-left">
-                    <h4 class="font-bold text-slate-400 uppercase text-xs mb-4 tracking-widest">Otras grandes alternativas:</h4>
-                    <div id="alternatives-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-medium">
-                        <!-- Alternativas dinámicas -->
-                    </div>
+                <div class="mt-10 text-center">
+                    <button onclick="location.reload()" class="text-slate-400 hover:text-white transition-colors">Reiniciar Test</button>
                 </div>
             </div>
-
         </div>
+
+        <!-- PANEL DE ADMINISTRACIÓN (BACKEND UI) -->
+        <div id="admin-view" class="admin-panel space-y-8">
+            <div class="glass rounded-3xl p-8 border-blue-500/30">
+                <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                    <i class="fas fa-database text-blue-500"></i> Gestor de Base de Datos
+                </h2>
+                
+                <form id="add-distro-form" class="space-y-4">
+                    <input type="hidden" id="edit-id">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="distro-name" placeholder="Nombre de la Distro (ej: Pop!_OS)" class="bg-slate-800 border border-slate-700 p-3 rounded-xl outline-none focus:border-blue-500" required>
+                        <input type="url" id="distro-url" placeholder="URL de descarga" class="bg-slate-800 border border-slate-700 p-3 rounded-xl outline-none focus:border-blue-500" required>
+                    </div>
+                    <textarea id="distro-desc" placeholder="Descripción breve..." class="w-full bg-slate-800 border border-slate-700 p-3 rounded-xl outline-none focus:border-blue-500 h-24" required></textarea>
+                    
+                    <div class="p-4 bg-slate-900/50 rounded-2xl space-y-4">
+                        <p class="text-xs font-bold text-slate-500 uppercase">Tags de compatibilidad (Separa por comas)</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="distro-cpu" placeholder="CPUs compatibles (low, mid, high)" class="bg-slate-800 border border-slate-700 p-2 rounded-lg text-sm">
+                            <input type="text" id="distro-ram" placeholder="RAM compatible (low, mid, high)" class="bg-slate-800 border border-slate-700 p-2 rounded-lg text-sm">
+                            <input type="text" id="distro-gpu" placeholder="GPUs compatibles (intel, nvidia, amd)" class="bg-slate-800 border border-slate-700 p-2 rounded-lg text-sm">
+                            <input type="text" id="distro-goal" placeholder="Objetivos (casual, game, dev, media)" class="bg-slate-800 border border-slate-700 p-2 rounded-lg text-sm">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button type="submit" id="save-btn" class="flex-1 bg-blue-600 p-3 rounded-xl font-bold hover:bg-blue-500 transition-all">Guardar en Cloud</button>
+                        <button type="button" id="cancel-edit" class="hidden bg-slate-700 px-6 rounded-xl font-bold">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="glass rounded-3xl p-8">
+                <h3 class="font-bold text-xl mb-4">Inventario Actual (<span id="count-distros">0</span>)</h3>
+                <div id="admin-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+                    <!-- Lista de distros para editar/borrar -->
+                    <div class="animate-pulse text-slate-500">Conectando con la base de datos...</div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <script>
-        // --- BASE DE DATOS DE DISTRIBUCIONES ---
-        const distros = [
-            // ... existing distros ...
-            { 
-                name: "Ubuntu Studio", 
-                desc: "Configurada de fábrica para músicos, diseñadores y editores de vídeo.", 
-                url: "https://ubuntustudio.org/", 
-                score: 0,
-                tags: { cpu: ['high'], ram: ['high'], gpu: ['amd', 'nvidia'], goal: ['media'] }
-            },
-            { 
-                name: "SystemRescue", 
-                desc: "La navaja suiza definitiva para técnicos. Ideal para reparar particiones y rescatar archivos de sistemas que no arrancan.", 
-                url: "https://www.system-rescue.org/", 
-                score: 0,
-                tags: { cpu: ['low', 'mid', 'high'], ram: ['low', 'mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['recovery'] }
-            },
-            { 
-                name: "Kali Linux", 
-                desc: "Aunque es para seguridad, tiene un modo forense increíble para recuperar datos y analizar sistemas comprometidos.", 
-                url: "https://www.kali.org/", 
-                score: 0,
-                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['recovery', 'work'] }
-            }
-        ];
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- GESTIÓN DEL FORMULARIO ---
+        // Configuración proporcionada por el entorno
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-pro';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let distros = [];
         let currentStep = 1;
-        const totalSteps = 3;
+        const errorBanner = document.getElementById('error-banner');
 
-        document.getElementById('next-btn').addEventListener('click', () => {
-            if (currentStep < totalSteps) {
-                changeStep(currentStep + 1);
-            } else {
-                showResults();
-            }
-        });
+        // --- LÓGICA DE DATOS (FIREBASE) ---
+        const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'distros');
 
-        document.getElementById('prev-btn').addEventListener('click', () => {
-            if (currentStep > 1) {
-                changeStep(currentStep - 1);
-            }
-        });
-
-        function changeStep(n) {
-            document.querySelector(`#step-${currentStep}`).classList.remove('active');
-            currentStep = n;
-            document.querySelector(`#step-${currentStep}`).classList.add('active');
-            
-            // Actualizar interfaz
-            document.getElementById('step-indicator').innerText = `Paso ${currentStep} de ${totalSteps}`;
-            document.getElementById('prev-btn').classList.toggle('hidden', currentStep === 1);
-            document.getElementById('next-btn').innerText = (currentStep === totalSteps) ? 'Ver recomendación' : 'Siguiente paso';
-        }
-
-        // --- DETECCIÓN AUTOMÁTICA ---
-        window.onload = () => {
-            const cores = navigator.hardwareConcurrency || 2;
-            const memory = navigator.deviceMemory || 4;
-            
-            document.getElementById('auto-cpu').innerText = cores;
-            document.getElementById('auto-ram').innerText = memory;
-
-            // Auto-selección lógica
-            if (cores >= 8) document.getElementById('cpu-select').value = 'high';
-            else if (cores >= 4) document.getElementById('cpu-select').value = 'mid';
-            else document.getElementById('cpu-select').value = 'low';
-
-            if (memory >= 12) document.getElementById('ram-select').value = 'high';
-            else if (memory >= 6) document.getElementById('ram-select').value = 'mid';
-            else document.getElementById('ram-select').value = 'low';
+        // Función para iniciar la escucha de datos después de la autenticación
+        const startSync = () => {
+            onSnapshot(colRef, (snapshot) => {
+                distros = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAdminList();
+                document.getElementById('count-distros').innerText = distros.length;
+                errorBanner.classList.add('hidden'); // Ocultar si funciona
+            }, (error) => {
+                console.error("Error al leer:", error);
+                if (error.code === 'permission-denied') {
+                    errorBanner.classList.remove('hidden');
+                }
+            });
         };
 
+        // --- AUTENTICACIÓN ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Sesión activa:", user.uid);
+                startSync();
+            } else {
+                signInAnonymously(auth).catch(e => {
+                    console.error("Auth error:", e);
+                    errorBanner.classList.remove('hidden');
+                });
+            }
+        });
+
+        // --- PANEL DE ADMIN (CRUD) ---
+        const form = document.getElementById('add-distro-form');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const editId = document.getElementById('edit-id').value;
+            
+            const data = {
+                name: document.getElementById('distro-name').value,
+                url: document.getElementById('distro-url').value,
+                desc: document.getElementById('distro-desc').value,
+                tags: {
+                    cpu: document.getElementById('distro-cpu').value.split(',').map(t => t.trim()),
+                    ram: document.getElementById('distro-ram').value.split(',').map(t => t.trim()),
+                    gpu: document.getElementById('distro-gpu').value.split(',').map(t => t.trim()),
+                    goal: document.getElementById('distro-goal').value.split(',').map(t => t.trim()),
+                }
+            };
+
+            try {
+                if (editId) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', editId), data);
+                } else {
+                    await addDoc(colRef, data);
+                }
+                form.reset();
+                document.getElementById('edit-id').value = '';
+                document.getElementById('save-btn').innerText = "Guardar en Cloud";
+                document.getElementById('cancel-edit').classList.add('hidden');
+            } catch (err) {
+                console.error("Error al guardar:", err);
+            }
+        };
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = distros.map(d => `
+                <div class="flex items-center justify-between p-4 bg-slate-900 border border-slate-800 rounded-2xl">
+                    <div>
+                        <p class="font-bold">${d.name}</p>
+                        <p class="text-[10px] text-slate-500 uppercase tracking-wider">${d.tags.goal.join(' | ')}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="window.editDistro('${d.id}')" class="p-2 text-blue-400 hover:bg-blue-500/10 rounded-lg"><i class="fas fa-edit"></i></button>
+                        <button onclick="window.deleteDistro('${d.id}')" class="p-2 text-red-400 hover:bg-red-500/10 rounded-lg"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.editDistro = (id) => {
+            const d = distros.find(item => item.id === id);
+            if (!d) return;
+            document.getElementById('edit-id').value = d.id;
+            document.getElementById('distro-name').value = d.name;
+            document.getElementById('distro-url').value = d.url;
+            document.getElementById('distro-desc').value = d.desc;
+            document.getElementById('distro-cpu').value = d.tags.cpu.join(', ');
+            document.getElementById('distro-ram').value = d.tags.ram.join(', ');
+            document.getElementById('distro-gpu').value = d.tags.gpu.join(', ');
+            document.getElementById('distro-goal').value = d.tags.goal.join(', ');
+            
+            document.getElementById('save-btn').innerText = "Actualizar Registro";
+            document.getElementById('cancel-edit').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.deleteDistro = async (id) => {
+            if (confirm("¿Estás seguro de eliminar esta distribución de la base de datos?")) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id));
+            }
+        };
+
+        document.getElementById('cancel-edit').onclick = () => {
+            form.reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('save-btn').innerText = "Guardar en Cloud";
+            document.getElementById('cancel-edit').classList.add('hidden');
+        };
+
+        // --- NAVEGACIÓN DE INTERFAZ ---
+        const toggleBtn = document.getElementById('toggle-admin');
+        toggleBtn.onclick = () => {
+            const isAdmin = document.getElementById('admin-view').classList.toggle('active');
+            document.getElementById('user-view').style.display = isAdmin ? 'none' : 'block';
+            toggleBtn.innerHTML = isAdmin ? '<i class="fas fa-user mr-2"></i> MODO USUARIO' : '<i class="fas fa-lock-open mr-2"></i> MODO ADMIN';
+        };
+
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+
+        nextBtn.onclick = () => {
+            if (currentStep < 3) {
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                currentStep++;
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                updateSteps();
+            } else {
+                calculateResults();
+            }
+        };
+
+        prevBtn.onclick = () => {
+            if (currentStep > 1) {
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                currentStep--;
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                updateSteps();
+            }
+        };
+
+        function updateSteps() {
+            document.getElementById('step-indicator').innerText = `Paso ${currentStep} de 3`;
+            prevBtn.classList.toggle('hidden', currentStep === 1);
+            nextBtn.innerText = currentStep === 3 ? "Ver mi Distro" : "Siguiente";
+        }
+
         // --- CÁLCULO DE RESULTADOS ---
-        function showResults() {
+        function calculateResults() {
             const formData = new FormData(document.getElementById('wizard-form'));
-            const userChoices = {
+            const user = {
                 cpu: formData.get('cpu'),
                 ram: formData.get('ram'),
                 gpu: formData.get('gpu'),
                 goal: formData.get('goal')
             };
 
-            // Reiniciar scores
-            distros.forEach(d => d.score = 0);
+            // Algoritmo de puntuación dinámica sobre los datos de Firestore
+            const scoredDistros = distros.map(d => {
+                let score = 0;
+                if (d.tags.cpu.includes(user.cpu)) score += 2;
+                if (d.tags.ram.includes(user.ram)) score += 2;
+                if (d.tags.gpu.includes(user.gpu)) score += 3;
+                if (d.tags.goal.includes(user.goal)) score += 5;
+                return { ...d, score };
+            }).sort((a, b) => b.score - a.score);
 
-            // Algoritmo de puntuación
-            distros.forEach(distro => {
-                if (distro.tags.cpu.includes(userChoices.cpu)) distro.score += 2;
-                if (distro.tags.ram.includes(userChoices.ram)) distro.score += 2;
-                if (distro.tags.gpu.includes(userChoices.gpu)) distro.score += 3;
-                if (distro.tags.goal.includes(userChoices.goal)) distro.score += 5;
-            });
-
-            // Ordenar por puntuación
-            const sorted = distros.sort((a, b) => b.score - a.score);
-            const best = sorted[0];
-
-            // Renderizar UI de resultados
             document.getElementById('wizard-form').classList.add('hidden');
             document.getElementById('results-view').classList.remove('hidden');
 
-            document.getElementById('res-name').innerText = best.name;
-            document.getElementById('res-desc').innerText = best.desc;
-            document.getElementById('res-link').href = best.url;
+            const winner = scoredDistros[0];
+            const mainContainer = document.getElementById('main-result-container');
+            
+            if (!winner || winner.score === 0) {
+                mainContainer.innerHTML = `<p class="p-8 bg-red-500/10 border border-red-500/20 rounded-2xl mt-4">No hay datos suficientes para recomendarte algo. ¡Prueba a añadir distros en el modo Admin!</p>`;
+                return;
+            }
 
-            // Alternativas
+            mainContainer.innerHTML = `
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-3xl shadow-2xl relative overflow-hidden text-left mt-6 animate-fadeIn">
+                    <div class="absolute -right-10 -bottom-10 text-9xl text-white/5 rotate-12"><i class="fas fa-linux"></i></div>
+                    <div class="relative z-10">
+                        <span class="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4 inline-block">Tu Match Perfecto</span>
+                        <h3 class="text-5xl font-black mb-4">${winner.name}</h3>
+                        <p class="text-lg text-blue-50 max-w-lg mb-8 leading-relaxed">${winner.desc}</p>
+                        <a href="${winner.url}" target="_blank" class="inline-flex items-center gap-2 bg-white text-blue-900 px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform">
+                            <i class="fas fa-download"></i> Ir a la web oficial
+                        </a>
+                    </div>
+                </div>
+            `;
+
             const altContainer = document.getElementById('alternatives-container');
-            altContainer.innerHTML = '';
-            sorted.slice(1, 4).forEach(alt => {
-                const div = document.createElement('div');
-                div.className = "flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all";
-                div.innerHTML = `
-                    <span>${alt.name}</span>
-                    <a href="${alt.url}" target="_blank" class="text-blue-400 hover:text-blue-300">
-                        <i class="fas fa-external-link-alt"></i>
-                    </a>
-                `;
-                altContainer.appendChild(div);
-            });
+            altContainer.innerHTML = scoredDistros.slice(1, 5).map(alt => `
+                <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-blue-500/30 transition-all">
+                    <div>
+                        <p class="font-bold">${alt.name}</p>
+                        <p class="text-xs text-slate-400">Score: ${alt.score} pts</p>
+                    </div>
+                    <a href="${alt.url}" target="_blank" class="text-blue-400 hover:text-white"><i class="fas fa-external-link-alt"></i></a>
+                </div>
+            `).join('');
         }
+
+        // Auto-detección básica de hardware
+        window.onload = () => {
+            const mem = navigator.deviceMemory || 4;
+            if (mem >= 12) document.getElementById('ram-select').value = 'high';
+            else if (mem >= 6) document.getElementById('ram-select').value = 'mid';
+            else document.getElementById('ram-select').value = 'low';
+        };
+
     </script>
 </body>
 </html>
