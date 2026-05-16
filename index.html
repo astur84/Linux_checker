@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DistroMatch Pro - Ubuntu Design</title>
+    <title>DistroMatch Pro | Repositorio Central</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
     <style>
+        /* Variables de Color según DESIGN.md */
         :root {
             --ubuntu-blue: #6699CC;
             --bright-blue: #2E96FF;
@@ -15,9 +16,9 @@
             --error-red: #C7162B;
             --near-black: #202020;
             --dark-charcoal: #262626;
+            --dark-gray: #2F2F2F;
             --charcoal: #373737;
             --medium-gray: #808080;
-            --border-dark: #373737;
         }
 
         body { 
@@ -26,32 +27,37 @@
             color: #FFFFFF;
             margin: 0;
             overflow-x: hidden;
-            line-height: 24px;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Diseño Geométrico Ubuntu (0px radius) */
-        .u-card, .u-btn, .u-input, .u-alert, .u-modal, .u-badge { border-radius: 0px !important; }
+        /* Estilos Geométricos (0px Radius) */
+        .u-card, .u-btn, .u-input, .u-alert { border-radius: 0px !important; }
 
         .u-card {
             background-color: var(--dark-charcoal);
-            border: 1px solid var(--border-dark);
+            border: 1px solid var(--charcoal);
             padding: 32px;
             transition: border-color 200ms ease;
         }
 
         .u-card:hover { border-color: var(--ubuntu-blue); }
 
+        /* Tipografía específica según escala */
+        .u-display { font-size: 40px; font-weight: 550; line-height: 48px; letter-spacing: 0px; }
+        .u-heading-light { font-size: 40px; font-weight: 180; line-height: 48px; }
+        .u-heading-4 { font-size: 24px; font-weight: 275; line-height: 32px; }
+
         .u-btn-primary {
             background-color: var(--bright-blue);
             color: white;
             height: 56px;
             padding: 16px 32px;
-            font-weight: 500;
+            font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             border: none;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 200ms;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -59,11 +65,10 @@
 
         .u-btn-primary:hover { background-color: var(--ubuntu-green); }
         .u-btn-primary:active { transform: scale(0.98); background-color: #008013; }
-        .u-btn-primary:disabled { background-color: var(--medium-gray); cursor: not-allowed; opacity: 0.6; }
 
         .u-input {
-            background-color: #2F2F2F;
-            border: 1px solid var(--border-dark);
+            background-color: var(--dark-gray);
+            border: 1px solid var(--charcoal);
             color: white;
             padding: 12px 16px;
             width: 100%;
@@ -72,119 +77,120 @@
             font-size: 16px;
         }
 
-        .u-input:focus { border-color: var(--ubuntu-blue); box-shadow: 0 0 0 2px rgba(102, 153, 204, 0.2); }
+        .u-input:focus { 
+            border-color: var(--ubuntu-blue); 
+            box-shadow: 0 0 0 2px rgba(102, 153, 204, 0.2); 
+        }
 
         .u-alert-error {
             background: rgba(199, 22, 43, 0.1);
             border-left: 4px solid var(--error-red);
             color: var(--error-red);
             padding: 24px;
-            margin-bottom: 24px;
         }
 
-        /* Control de Vistas */
+        /* Control de Visibilidad */
         .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease-out; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Loader */
-        .loader {
-            width: 32px;
-            height: 32px;
+        /* Loader Personalizado */
+        .u-spinner {
+            width: 40px;
+            height: 40px;
             border: 3px solid var(--charcoal);
             border-top: 3px solid var(--bright-blue);
             border-radius: 50% !important;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <!-- Navegación -->
-    <nav class="h-[64px] bg-[#202020] border-b border-[#373737] flex justify-between items-center px-8">
-        <div class="flex items-center gap-4">
+    <!-- Header / Nav -->
+    <header class="h-[64px] bg-[#202020] border-b border-[#373737] flex justify-between items-center px-8 sticky top-0 z-50">
+        <div class="flex items-center gap-3">
             <i class="fab fa-linux text-[#2E96FF] text-2xl"></i>
-            <span class="text-xl font-medium tracking-tighter uppercase">DistroMatch <span class="font-light text-[#6699CC]">Pro</span></span>
+            <span class="text-lg font-medium tracking-tight uppercase">DistroMatch <span class="font-light text-[#6699CC]">PRO</span></span>
         </div>
-        <div id="nav-auth-status" class="hidden flex items-center gap-4">
-            <span id="user-email-display" class="text-[10px] font-bold text-[#808080] uppercase tracking-widest"></span>
+        <div id="auth-controls" class="hidden flex items-center gap-6">
+            <span id="user-display" class="text-[10px] font-bold text-[#808080] uppercase tracking-widest"></span>
             <button id="btn-logout" class="text-[10px] font-bold text-[#C7162B] uppercase hover:underline">Cerrar Sesión</button>
         </div>
-    </nav>
+    </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-16">
+    <main class="max-w-5xl mx-auto px-6 py-12">
         
-        <!-- 1. PANTALLA DE CARGA INICIAL -->
-        <section id="view-loading" class="view-section active text-center py-20">
-            <div class="flex flex-col items-center gap-6">
-                <div class="loader"></div>
-                <p class="text-[10px] font-bold tracking-[0.3em] text-[#6699CC] uppercase">Sincronizando con la red...</p>
-            </div>
+        <!-- PANTALLA 1: CARGA INICIAL (CON TIMEOUT) -->
+        <section id="view-loading" class="view-section active flex flex-col items-center justify-center min-h-[60vh]">
+            <div class="u-spinner mb-6"></div>
+            <p class="text-[10px] font-bold tracking-[0.3em] text-[#6699CC] uppercase animate-pulse">Sincronizando con la red central...</p>
         </section>
 
-        <!-- 2. PANTALLA DE ACCESO -->
-        <section id="view-gate" class="view-section text-center max-w-md mx-auto">
+        <!-- PANTALLA 2: ACCESO RESTRINGIDO -->
+        <section id="view-gate" class="view-section max-w-md mx-auto">
             <div class="u-card">
-                <h1 class="text-[40px] font-light mb-4 tracking-tight leading-[48px]">Acceso Admin</h1>
-                <p class="text-[#808080] mb-10 text-sm">Autenticación requerida para modificar el repositorio central de distribuciones Linux.</p>
+                <h1 class="u-display mb-2">Acceso Admin</h1>
+                <p class="text-[#808080] text-sm mb-8">Introduzca sus credenciales para gestionar el repositorio oficial de distribuciones.</p>
                 
-                <div id="login-error" class="hidden u-alert-error mb-6 text-left text-xs"></div>
+                <div id="login-error" class="hidden u-alert-error mb-6 text-xs"></div>
 
-                <form id="login-form" class="space-y-4">
-                    <div class="text-left">
-                        <label class="text-[14px] text-white mb-2 block">Email Corporativo</label>
-                        <input type="email" id="email" class="u-input" placeholder="admin@distromatch.pro" required>
-                    </div>
-                    <div class="text-left">
-                        <label class="text-[14px] text-white mb-2 block">Contraseña</label>
-                        <input type="password" id="pass" class="u-input" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="u-btn-primary w-full mt-4">Desbloquear Sistema</button>
-                </form>
-                
-                <p class="mt-8 text-[9px] text-[#555] uppercase tracking-widest font-bold">Encrypted Connection v4.2.0</p>
-            </div>
-        </section>
-
-        <!-- 3. PANEL DE ADMINISTRACIÓN -->
-        <section id="view-admin" class="view-section space-y-8">
-            <div class="u-card">
-                <h2 class="text-[24px] font-light mb-8">Añadir Nueva Distribución</h2>
-                <form id="distro-form" class="space-y-6">
-                    <input type="hidden" id="edit-id">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="text-[14px] mb-2 block">Nombre de la Distro</label>
-                            <input type="text" id="name" class="u-input" placeholder="Ej: Ubuntu 24.04 LTS" required>
-                        </div>
-                        <div>
-                            <label class="text-[14px] mb-2 block">URL de Descarga</label>
-                            <input type="url" id="url" class="u-input" placeholder="https://..." required>
-                        </div>
+                <form id="login-form" class="space-y-5">
+                    <div>
+                        <label class="text-sm font-medium mb-2 block">Identificador de Usuario</label>
+                        <input type="email" id="email" class="u-input" placeholder="usuario@empresa.com" required>
                     </div>
                     <div>
-                        <label class="text-[14px] mb-2 block">Descripción Técnica</label>
-                        <textarea id="desc" class="u-input h-32 py-4" placeholder="Detalles sobre el kernel, entorno de escritorio..." required></textarea>
+                        <label class="text-sm font-medium mb-2 block">Token de Seguridad</label>
+                        <input type="password" id="pass" class="u-input" placeholder="••••••••" required>
                     </div>
-                    
-                    <div class="p-6 bg-[#1A1A1A] border border-[#373737]">
-                        <p class="text-[10px] font-bold text-[#6699CC] uppercase mb-4 tracking-widest">Requisitos Mínimos (Separados por coma)</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" id="tag-cpu" class="u-input !h-12 text-sm" placeholder="CPU: low, mid, high">
-                            <input type="text" id="tag-ram" class="u-input !h-12 text-sm" placeholder="RAM: low, mid, high">
-                        </div>
-                    </div>
-                    
-                    <button type="submit" id="btn-save" class="u-btn-primary w-full">Guardar en Repositorio</button>
+                    <button type="submit" id="btn-login" class="u-btn-primary w-full mt-4">Desbloquear Consola</button>
                 </form>
             </div>
+            <p class="text-center mt-12 text-[9px] text-[#444] font-bold uppercase tracking-[0.4em]">Secure Distribution Node v2.5.1</p>
+        </section>
 
-            <div class="u-card">
-                <h3 class="text-xs font-bold text-[#6699CC] uppercase tracking-[0.2em] mb-6">Distribuciones en la Nube</h3>
-                <div id="distro-list" class="space-y-4">
-                    <!-- Dinámico -->
+        <!-- PANTALLA 3: PANEL DE ADMINISTRACIÓN -->
+        <section id="view-admin" class="view-section space-y-10">
+            <div class="flex justify-between items-end">
+                <div>
+                    <h1 class="u-heading-light">Gestión de Repositorio</h1>
+                    <p class="text-[#808080] text-sm">Añada o modifique distribuciones Linux en tiempo real.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Formulario -->
+                <div class="lg:col-span-1">
+                    <div class="u-card">
+                        <h3 class="u-heading-3 mb-6 uppercase text-xs tracking-widest text-[#6699CC]">Editor de Distro</h3>
+                        <form id="distro-form" class="space-y-4">
+                            <input type="hidden" id="edit-id">
+                            <div>
+                                <label class="text-[12px] uppercase font-bold text-[#808080] mb-2 block">Nombre</label>
+                                <input type="text" id="distro-name" class="u-input !h-12" placeholder="Ej: Fedora Workstation" required>
+                            </div>
+                            <div>
+                                <label class="text-[12px] uppercase font-bold text-[#808080] mb-2 block">Descripción</label>
+                                <textarea id="distro-desc" class="u-input !h-24 py-3" placeholder="Breve resumen técnico..." required></textarea>
+                            </div>
+                            <div>
+                                <label class="text-[12px] uppercase font-bold text-[#808080] mb-2 block">Tags (CPU, RAM)</label>
+                                <input type="text" id="distro-tags" class="u-input !h-12" placeholder="Ej: High, Mid, x64" required>
+                            </div>
+                            <button type="submit" id="btn-save" class="u-btn-primary w-full text-sm">Sincronizar Datos</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Lista -->
+                <div class="lg:col-span-2 space-y-4">
+                    <h3 class="text-xs font-bold text-[#808080] uppercase tracking-widest px-2">Registros Activos</h3>
+                    <div id="distro-list" class="space-y-4">
+                        <!-- Items dinámicos -->
+                    </div>
                 </div>
             </div>
         </section>
@@ -194,77 +200,58 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Configuración de Entorno
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-pro-v4';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-pro-final';
 
         let distros = [];
-        let unsubscribe = null;
-        let authResolved = false;
+        let unsubscribeStore = null;
+        let isAuthResolved = false;
 
-        // VISTAS
+        // Función Navegación de Vistas
         function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
         }
 
-        // TIME-OUT DE SEGURIDAD (Evita carga infinita)
-        setTimeout(() => {
-            if (!authResolved) {
-                console.warn("Auth tardando demasiado, forzando vista de acceso.");
+        // --- SISTEMA DE ARRANQUE BLINDADO ---
+        // Si en 2500ms no hay respuesta de Auth, forzamos la puerta de acceso
+        const authTimeout = setTimeout(() => {
+            if (!isAuthResolved) {
+                console.log("Auth Timeout: Redirigiendo a Gate");
                 showView('view-gate');
             }
-        }, 3000);
+        }, 2500);
 
-        // ESCUCHA DE ESTADO DE AUTENTICACIÓN
         onAuthStateChanged(auth, (user) => {
-            authResolved = true;
+            isAuthResolved = true;
+            clearTimeout(authTimeout);
+
             if (user) {
-                document.getElementById('nav-auth-status').classList.remove('hidden');
-                document.getElementById('user-email-display').innerText = user.email;
+                document.getElementById('auth-controls').classList.remove('hidden');
+                document.getElementById('user-display').innerText = user.email;
                 showView('view-admin');
-                startFirestoreSync();
+                initDataSync();
             } else {
-                document.getElementById('nav-auth-status').classList.add('hidden');
+                document.getElementById('auth-controls').classList.add('hidden');
                 showView('view-gate');
-                if (unsubscribe) unsubscribe();
+                if (unsubscribeStore) unsubscribeStore();
             }
-        }, (error) => {
-            console.error("Auth Error:", error);
-            showView('view-gate');
         });
 
-        // SINCRONIZACIÓN FIREBASE
-        function startFirestoreSync() {
-            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'distros');
-            unsubscribe = onSnapshot(colRef, 
-                (snap) => {
-                    distros = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    renderList();
-                },
-                (err) => {
-                    console.error("Firestore Error:", err);
-                    if (auth.currentUser) {
-                        const errDiv = document.getElementById('login-error');
-                        errDiv.innerText = "Error de sincronización: Revisa las reglas de seguridad de Firestore.";
-                        errDiv.classList.remove('hidden');
-                    }
-                }
-            );
-        }
-
-        // LOGIN MANUAL
-        document.getElementById('login-form').onsubmit = async (e) => {
+        // Autenticación Manual
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button');
+            const btn = document.getElementById('btn-login');
             const errDiv = document.getElementById('login-error');
             
             btn.disabled = true;
-            btn.innerText = "Autenticando...";
+            btn.innerText = "Verificando...";
             errDiv.classList.add('hidden');
 
             try {
@@ -272,37 +259,36 @@
                 const pass = document.getElementById('pass').value;
                 await signInWithEmailAndPassword(auth, email, pass);
             } catch (err) {
-                console.error(err);
-                errDiv.innerText = "Error de acceso: El usuario o la contraseña no son válidos.";
+                errDiv.innerText = "Error: Acceso denegado. Verifique su token e identidad.";
                 errDiv.classList.remove('hidden');
                 btn.disabled = false;
-                btn.innerText = "Desbloquear Sistema";
+                btn.innerText = "Desbloquear Consola";
             }
-        };
+        });
 
-        // LOGOUT
-        document.getElementById('btn-logout').onclick = () => {
-            signOut(auth).then(() => {
-                window.location.reload();
+        // Logout
+        document.getElementById('btn-logout').onclick = () => signOut(auth);
+
+        // --- GESTIÓN DE DATOS ---
+        function initDataSync() {
+            const path = collection(db, 'artifacts', appId, 'public', 'data', 'distros');
+            unsubscribeStore = onSnapshot(path, (snap) => {
+                distros = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderDistros();
+            }, (error) => {
+                console.error("Firestore Sync Error:", error);
             });
-        };
+        }
 
-        // GESTIÓN CRUD
         const distroForm = document.getElementById('distro-form');
         distroForm.onsubmit = async (e) => {
             e.preventDefault();
-            if (!auth.currentUser) return;
-
             const id = document.getElementById('edit-id').value;
             const data = {
-                name: document.getElementById('name').value,
-                url: document.getElementById('url').value,
-                desc: document.getElementById('desc').value,
-                tags: {
-                    cpu: document.getElementById('tag-cpu').value.split(',').map(t => t.trim().toLowerCase()),
-                    ram: document.getElementById('tag-ram').value.split(',').map(t => t.trim().toLowerCase())
-                },
-                updatedAt: new Date().toISOString()
+                name: document.getElementById('distro-name').value,
+                desc: document.getElementById('distro-desc').value,
+                tags: document.getElementById('distro-tags').value.split(',').map(t => t.trim()),
+                timestamp: serverTimestamp()
             };
 
             try {
@@ -313,52 +299,57 @@
                 }
                 distroForm.reset();
                 document.getElementById('edit-id').value = "";
-                document.getElementById('btn-save').innerText = "Guardar en Repositorio";
+                document.getElementById('btn-save').innerText = "Sincronizar Datos";
             } catch (err) {
-                alert("Error de escritura en Firebase: " + err.message);
+                alert("Error al guardar: " + err.message);
             }
         };
 
-        function renderList() {
-            const list = document.getElementById('distro-list');
+        function renderDistros() {
+            const container = document.getElementById('distro-list');
             if (distros.length === 0) {
-                list.innerHTML = `<p class="text-center text-[#808080] py-8 text-sm">No hay distribuciones registradas todavía.</p>`;
+                container.innerHTML = `
+                    <div class="u-card text-center py-12 border-dashed">
+                        <p class="text-[#808080] text-sm">El repositorio está vacío.</p>
+                    </div>
+                `;
                 return;
             }
-            list.innerHTML = distros.map(d => `
-                <div class="flex flex-col md:flex-row md:items-center justify-between p-6 bg-[#1A1A1A] border border-[#373737] group hover:border-[#6699CC] transition-all">
-                    <div class="mb-4 md:mb-0">
-                        <p class="font-bold text-sm tracking-wide uppercase text-white">${d.name}</p>
-                        <div class="flex gap-2 mt-2">
-                             ${d.tags.cpu.map(t => `<span class="text-[9px] px-2 py-0.5 border border-[#373737] text-[#6699CC] font-bold uppercase">${t}</span>`).join('')}
+
+            container.innerHTML = distros.map(d => `
+                <div class="u-card !p-6 flex justify-between items-center group">
+                    <div>
+                        <h4 class="text-sm font-bold uppercase tracking-wider mb-1">${d.name}</h4>
+                        <p class="text-[11px] text-[#808080] mb-3">${d.desc}</p>
+                        <div class="flex gap-2">
+                            ${d.tags.map(t => `<span class="text-[9px] font-bold px-2 py-0.5 bg-[#1A1A1A] text-[#2E96FF] border border-[#373737] uppercase">${t}</span>`).join('')}
                         </div>
                     </div>
-                    <div class="flex gap-4">
-                        <button onclick="window.editDistro('${d.id}')" class="text-[10px] font-bold text-[#2E96FF] uppercase tracking-widest hover:text-white">Modificar</button>
-                        <button onclick="window.deleteDistro('${d.id}')" class="text-[10px] font-bold text-[#C7162B] uppercase tracking-widest hover:text-white">Eliminar</button>
+                    <div class="flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="window.editItem('${d.id}')" class="text-[10px] font-bold text-[#6699CC] uppercase tracking-widest hover:text-white">Editar</button>
+                        <button onclick="window.deleteItem('${d.id}')" class="text-[10px] font-bold text-[#C7162B] uppercase tracking-widest hover:text-white">Eliminar</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        window.editDistro = (id) => {
-            const d = distros.find(x => x.id === id);
-            document.getElementById('edit-id').value = d.id;
-            document.getElementById('name').value = d.name;
-            document.getElementById('url').value = d.url;
-            document.getElementById('desc').value = d.desc;
-            document.getElementById('tag-cpu').value = d.tags.cpu.join(', ');
-            document.getElementById('tag-ram').value = d.tags.ram.join(', ');
-            document.getElementById('btn-save').innerText = "Actualizar Registro Cloud";
+        // Global functions for inline handlers
+        window.editItem = (id) => {
+            const item = distros.find(d => d.id === id);
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('distro-name').value = item.name;
+            document.getElementById('distro-desc').value = item.desc;
+            document.getElementById('distro-tags').value = item.tags.join(', ');
+            document.getElementById('btn-save').innerText = "Actualizar Registro";
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.deleteDistro = async (id) => {
-            const confirmBox = confirm("¿Deseas eliminar permanentemente esta distribución del repositorio cloud?");
-            if (confirmBox) {
+        window.deleteItem = async (id) => {
+            if (confirm("¿Confirmar eliminación del repositorio central?")) {
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id));
             }
         };
+
     </script>
 </body>
 </html>
