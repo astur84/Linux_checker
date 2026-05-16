@@ -19,13 +19,16 @@
 <body class="bg-slate-950 text-slate-200 min-h-screen">
 
     <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
-        <div class="flex items-center gap-2">
-            <div class="bg-blue-600 p-2 rounded-lg">
-                <i class="fas fa-linux text-white text-xl"></i>
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 p-2 rounded-2xl shadow-lg shadow-blue-500/30">
+                <i class="fab fa-linux text-white text-3xl"></i>
             </div>
-            <span class="text-xl font-bold tracking-tight">DistroMatch</span>
+            <div>
+                <span class="text-2xl font-black tracking-tighter block leading-none">DistroMatch</span>
+                <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">Linux Finder</span>
+            </div>
         </div>
-        <div id="step-indicator" class="text-sm font-medium text-slate-500 uppercase tracking-widest">Paso 1 de 4</div>
+        <div id="step-indicator" class="text-sm font-medium text-slate-500 uppercase tracking-widest">Paso 1 de 3</div>
     </nav>
 
     <main class="max-w-4xl mx-auto px-4 py-8">
@@ -96,39 +99,22 @@
                     <p class="text-slate-400 mb-8">Dinos qué planeas hacer principalmente en Linux.</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="radio" name="goal" value="casual" id="goal-casual" class="radio-card hidden" checked>
-                        <label for="goal-casual" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
-                            <i class="fas fa-mug-hot text-2xl text-amber-400 w-10 text-center"></i>
-                            <div>
-                                <p class="font-bold">Uso Casual</p>
-                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Navegar, YouTube, Ofimática</p>
-                            </div>
-                        </label>
-
-                        <input type="radio" name="goal" value="gaming" id="goal-gaming" class="radio-card hidden">
-                        <label for="goal-gaming" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
-                            <i class="fas fa-gamepad text-2xl text-purple-400 w-10 text-center"></i>
-                            <div>
-                                <p class="font-bold">Gaming</p>
-                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Steam, FPS, Emulación</p>
-                            </div>
-                        </label>
-
-                        <input type="radio" name="goal" value="work" id="goal-work" class="radio-card hidden">
-                        <label for="goal-work" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
-                            <i class="fas fa-code text-2xl text-blue-400 w-10 text-center"></i>
-                            <div>
-                                <p class="font-bold">Trabajo / Dev</p>
-                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Docker, Python, Estabilidad</p>
-                            </div>
-                        </label>
-
+                        <!-- ... existing goal cards ... -->
                         <input type="radio" name="goal" value="media" id="goal-media" class="radio-card hidden">
                         <label for="goal-media" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
                             <i class="fas fa-film text-2xl text-red-400 w-10 text-center"></i>
                             <div>
                                 <p class="font-bold">Diseño / Media</p>
                                 <p class="text-xs text-slate-400 uppercase tracking-tighter">Edición Video, Audio, Arte</p>
+                            </div>
+                        </label>
+
+                        <input type="radio" name="goal" value="recovery" id="goal-recovery" class="radio-card hidden">
+                        <label for="goal-recovery" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
+                            <i class="fas fa-life-ring text-2xl text-emerald-400 w-10 text-center"></i>
+                            <div>
+                                <p class="font-bold">Recuperación / Rescate</p>
+                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Reparar PCs, Forense, Discos</p>
                             </div>
                         </label>
                     </div>
@@ -184,61 +170,27 @@
     <script>
         // --- BASE DE DATOS DE DISTRIBUCIONES ---
         const distros = [
-            { 
-                name: "Pop!_OS", 
-                desc: "Ideal para gaming y usuarios de NVIDIA. Excelente gestión de ventanas y muy moderna.", 
-                url: "https://pop.system76.com/", 
-                score: 0,
-                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['nvidia', 'amd'], goal: ['gaming', 'work'] }
-            },
-            { 
-                name: "Linux Mint (Cinnamon)", 
-                desc: "La mejor para principiantes que vienen de Windows. Súper estable, elegante y fácil de configurar.", 
-                url: "https://linuxmint.com/", 
-                score: 0,
-                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['casual', 'work'] }
-            },
-            { 
-                name: "Nobara Project", 
-                desc: "Creada por ingenieros de Red Hat específicamente para jugar. Rendimiento extremo en Steam.", 
-                url: "https://nobaraproject.org/", 
-                score: 0,
-                tags: { cpu: ['high'], ram: ['high'], gpu: ['amd', 'nvidia'], goal: ['gaming'] }
-            },
-            { 
-                name: "Lubuntu", 
-                desc: "Extremadamente ligera. Ideal para revivir PCs que creías muertos.", 
-                url: "https://lubuntu.me/", 
-                score: 0,
-                tags: { cpu: ['low'], ram: ['low'], gpu: ['intel'], goal: ['casual'] }
-            },
-            { 
-                name: "Fedora Workstation", 
-                desc: "La vanguardia de Linux. Ideal para desarrolladores que quieren lo último en tecnología.", 
-                url: "https://getfedora.org/", 
-                score: 0,
-                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd'], goal: ['work', 'media'] }
-            },
-            { 
-                name: "Ubuntu LTS", 
-                desc: "El estándar de la industria. Lo que sea que busques, funciona en Ubuntu.", 
-                url: "https://ubuntu.com/download/desktop", 
-                score: 0,
-                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['work', 'casual', 'media'] }
-            },
-            { 
-                name: "Zorin OS Lite", 
-                desc: "Interfaz preciosa pero adaptada a equipos antiguos con pocos recursos.", 
-                url: "https://zorin.com/os/download/", 
-                score: 0,
-                tags: { cpu: ['low', 'mid'], ram: ['low', 'mid'], gpu: ['intel'], goal: ['casual'] }
-            },
+            // ... existing distros ...
             { 
                 name: "Ubuntu Studio", 
                 desc: "Configurada de fábrica para músicos, diseñadores y editores de vídeo.", 
                 url: "https://ubuntustudio.org/", 
                 score: 0,
                 tags: { cpu: ['high'], ram: ['high'], gpu: ['amd', 'nvidia'], goal: ['media'] }
+            },
+            { 
+                name: "SystemRescue", 
+                desc: "La navaja suiza definitiva para técnicos. Ideal para reparar particiones y rescatar archivos de sistemas que no arrancan.", 
+                url: "https://www.system-rescue.org/", 
+                score: 0,
+                tags: { cpu: ['low', 'mid', 'high'], ram: ['low', 'mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['recovery'] }
+            },
+            { 
+                name: "Kali Linux", 
+                desc: "Aunque es para seguridad, tiene un modo forense increíble para recuperar datos y analizar sistemas comprometidos.", 
+                url: "https://www.kali.org/", 
+                score: 0,
+                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['recovery', 'work'] }
             }
         ];
 
