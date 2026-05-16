@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendador Linux</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen flex items-center justify-center">
+
+    <div class="max-w-md w-full bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700">
+        <h2 class="text-2xl font-bold mb-6 text-center text-blue-400">Encuentra tu Distro Linux</h2>
+        
+        <form id="linuxForm" class="space-y-6">
+            <!-- Detección automática informativa -->
+            <div class="bg-gray-700 p-4 rounded-lg text-sm text-gray-300">
+                <span class="font-semibold text-blue-300">Detectado automáticamente:</span>
+                <ul class="list-disc pl-5 mt-1 space-y-1">
+                    <li>Núcleos de CPU: <span id="det-cpu" class="font-bold text-white">-</span></li>
+                    <li>RAM aproximada: <span id="det-ram" class="font-bold text-white">-</span> GB</li>
+                </ul>
+            </div>
+
+            <!-- Entrada de RAM -->
+            <div>
+                <label class="block text-sm font-medium mb-2">¿Cuánta memoria RAM tienes?</label>
+                <select id="ram" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+                    <option value="low">Menos de 2 GB (PC muy antiguo)</option>
+                    <option value="mid">Entre 2 GB y 6 GB (PC antiguo / básico)</option>
+                    <option value="high">8 GB o más (PC moderno)</option>
+                </select>
+            </div>
+
+            <!-- Entrada de GPU -->
+            <div>
+                <label class="block text-sm font-medium mb-2">¿Qué tarjeta gráfica utiliza tu PC?</label>
+                <select id="gpu" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
+                    <option value="intel">Intel / Gráfica integrada estándar</option>
+                    <option value="amd">AMD Radeon</option>
+                    <option value="nvidia">NVIDIA (Requiere drivers privativos)</option>
+                </select>
+            </div>
+
+            <!-- Botón de acción -->
+            <button type="button" onclick="calcularRecomendacion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors">
+                Obtener recomendación
+            </button>
+        </form>
+
+        <!-- Contenedor de Resultado -->
+        <div id="resultado" class="hidden mt-6 p-4 bg-blue-950 border border-blue-800 rounded-lg text-center">
+            <h3 class="text-xl font-semibold mb-2 text-blue-300">Tu opción ideal es:</h3>
+            <p id="distroName" class="text-3xl font-extrabold text-white mb-2">Linux Mint</p>
+            <p id="distroDesc" class="text-sm text-gray-300"></p>
+        </div>
+    </div>
+
+    <script>
+        // 1. Autofill al cargar la página
+        document.addEventListener("DOMContentLoaded", () => {
+            const cores = navigator.hardwareConcurrency || "No detectado";
+            const memory = navigator.deviceMemory || "No detectado";
+            
+            document.getElementById('det-cpu').innerText = cores;
+            document.getElementById('det-ram').innerText = memory;
+
+            // Pre-seleccionar el dropdown de RAM según la detección
+            if (memory !== "No detectado") {
+                if (memory <= 2) document.getElementById('ram').value = 'low';
+                else if (memory <= 6) document.getElementById('ram').value = 'mid';
+                else document.getElementById('ram').value = 'high';
+            }
+        });
+
+        // 2. Lógica de recomendación simplificada
+        function calcularRecomendacion() {
+            const ram = document.getElementById('ram').value;
+            const gpu = document.getElementById('gpu').value;
+            
+            let recomendacion = "";
+            let descripcion = "";
+
+            if (ram === 'low') {
+                recomendacion = "antiX Linux o Puppy Linux";
+                descripcion = "Tu hardware es muy limitado. Estas distribuciones ligeras consumen apenas 200MB de RAM y le darán una nueva vida a tu máquina.";
+            } else if (ram === 'mid') {
+                if (gpu === 'nvidia') {
+                    recomendacion = "Linux Mint (XFCE Edition)";
+                    descripcion = "Ideal para equipos medianos. Te recomendamos la edición XFCE por su ligereza y Linux Mint incluye un gestor excelente para activar tus drivers de NVIDIA de forma sencilla.";
+                } else {
+                    recomendacion = "Lubuntu o Linux Mint XFCE";
+                    descripcion = "Perfecto para revivir tu ordenador de ofimática con un entorno moderno pero que apenas consume recursos.";
+                }
+            } else { // RAM Alta
+                if (gpu === 'nvidia') {
+                    recomendacion = "Pop!_OS (NVIDIA ISO)";
+                    descripcion = "Es la distro reina para usuarios con tarjetas NVIDIA. Puedes descargar una versión que ya viene con los drivers listos para jugar o trabajar.";
+                } else {
+                    recomendacion = "Fedora Workstation o Ubuntu";
+                    descripcion = "Tu PC tiene potencia de sobra. Disfrutarás de una experiencia moderna, estable y con el software más actualizado del ecosistema Linux.";
+                }
+            }
+
+            // Mostrar resultados
+            document.getElementById('distroName').innerText = recomendacion;
+            document.getElementById('distroDesc').innerText = descripcion;
+            document.getElementById('resultado').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
