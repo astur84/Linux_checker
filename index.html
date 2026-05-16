@@ -127,6 +127,7 @@
         <section id="view-loading" class="view-section active flex flex-col items-center justify-center min-h-[60vh]">
             <div class="u-spinner mb-6"></div>
             <p class="text-[10px] font-bold tracking-[0.3em] text-[#6699CC] uppercase animate-pulse">Sincronizando con la red central...</p>
+            <p id="debug-status" class="mt-4 text-[9px] text-gray-600 uppercase tracking-widest">Iniciando protocolo de conexión...</p>
         </section>
 
         <!-- PANTALLA 2: ACCESO RESTRINGIDO -->
@@ -202,8 +203,18 @@
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- SISTEMA DE DIAGNÓSTICO ---
+        const log = (msg, type = 'info') => {
+            const icons = { info: '🔵', success: '🟢', error: '🔴', warn: '🟡' };
+            console.log(`${icons[type]} [Firebase Debug]: ${msg}`);
+            const debugEl = document.getElementById('debug-status');
+            if (debugEl) debugEl.innerText = msg;
+        };
+
         // Configuración de Entorno
         const firebaseConfig = JSON.parse(__firebase_config);
+        log("Iniciando aplicación Firebase...", 'info');
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -220,24 +231,25 @@
         }
 
         // --- SISTEMA DE ARRANQUE BLINDADO ---
-        // Si en 2500ms no hay respuesta de Auth, forzamos la puerta de acceso
         const authTimeout = setTimeout(() => {
             if (!isAuthResolved) {
-                console.log("Auth Timeout: Redirigiendo a Gate");
+                log("Tiempo de espera agotado. Forzando login.", 'warn');
                 showView('view-gate');
             }
-        }, 2500);
+        }, 3500);
 
         onAuthStateChanged(auth, (user) => {
             isAuthResolved = true;
             clearTimeout(authTimeout);
 
             if (user) {
+                log(`Usuario detectado: ${user.email}`, 'success');
                 document.getElementById('auth-controls').classList.remove('hidden');
                 document.getElementById('user-display').innerText = user.email;
                 showView('view-admin');
                 initDataSync();
             } else {
+                log("No hay sesión activa. Dirigiendo a Gate.", 'info');
                 document.getElementById('auth-controls').classList.add('hidden');
                 showView('view-gate');
                 if (unsubscribeStore) unsubscribeStore();
@@ -254,12 +266,17 @@
             btn.innerText = "Verificando...";
             errDiv.classList.add('hidden');
 
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+
+            log(`Intentando acceso para: ${email}`, 'info');
+
             try {
-                const email = document.getElementById('email').value;
-                const pass = document.getElementById('pass').value;
                 await signInWithEmailAndPassword(auth, email, pass);
+                log("Acceso concedido satisfactoriamente.", 'success');
             } catch (err) {
-                errDiv.innerText = "Error: Acceso denegado. Verifique su token e identidad.";
+                log(`Fallo de acceso: ${err.code}`, 'error');
+                errDiv.innerText = `Error [${err.code}]: Acceso denegado. Verifique su token e identidad.`;
                 errDiv.classList.remove('hidden');
                 btn.disabled = false;
                 btn.innerText = "Desbloquear Consola";
@@ -267,16 +284,23 @@
         });
 
         // Logout
-        document.getElementById('btn-logout').onclick = () => signOut(auth);
+        document.getElementById('btn-logout').onclick = () => {
+            log("Cerrando sesión...", 'info');
+            signOut(auth);
+        };
 
         // --- GESTIÓN DE DATOS ---
         function initDataSync() {
+            log("Iniciando sincronización de datos Firestore...", 'info');
             const path = collection(db, 'artifacts', appId, 'public', 'data', 'distros');
+            
             unsubscribeStore = onSnapshot(path, (snap) => {
+                log(`Datos recibidos: ${snap.size} registros encontrados.`, 'success');
                 distros = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderDistros();
             }, (error) => {
-                console.error("Firestore Sync Error:", error);
+                log(`Error en Firestore: ${error.message}`, 'error');
+                console.error(error);
             });
         }
 
@@ -292,15 +316,19 @@
             };
 
             try {
+                log("Enviando datos al repositorio central...", 'info');
                 if (id) {
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id), data);
+                    log("Registro actualizado.", 'success');
                 } else {
                     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'distros'), data);
+                    log("Nuevo registro creado.", 'success');
                 }
                 distroForm.reset();
                 document.getElementById('edit-id').value = "";
                 document.getElementById('btn-save').innerText = "Sincronizar Datos";
             } catch (err) {
+                log(`Error al guardar: ${err.message}`, 'error');
                 alert("Error al guardar: " + err.message);
             }
         };
@@ -333,7 +361,6 @@
             `).join('');
         }
 
-        // Global functions for inline handlers
         window.editItem = (id) => {
             const item = distros.find(d => d.id === id);
             document.getElementById('edit-id').value = item.id;
@@ -346,7 +373,13 @@
 
         window.deleteItem = async (id) => {
             if (confirm("¿Confirmar eliminación del repositorio central?")) {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id));
+                try {
+                    log(`Eliminando registro: ${id}`, 'info');
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id));
+                    log("Registro eliminado.", 'success');
+                } catch (err) {
+                    log(`Fallo al eliminar: ${err.message}`, 'error');
+                }
             }
         };
 
