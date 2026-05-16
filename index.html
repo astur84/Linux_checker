@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DistroMatch Pro - Design System Ubuntu</title>
+    <title>DistroMatch Pro - Ubuntu Design</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Fuente Ubuntu oficial -->
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --ubuntu-blue: #6699CC;
             --bright-blue: #2E96FF;
             --ubuntu-green: #0E8420;
-            --dark-charcoal: #262626;
-            --near-black: #202020;
-            --charcoal: #373737;
             --error-red: #C7162B;
+            --near-black: #202020;
+            --dark-charcoal: #262626;
+            --charcoal: #373737;
+            --medium-gray: #808080;
         }
 
         body { 
@@ -24,577 +24,318 @@
             background-color: var(--near-black);
             color: #FFFFFF;
             margin: 0;
-            padding: 0;
+            overflow-x: hidden;
         }
 
-        /* Estética Ubuntu: Bordes 0px estrictos */
+        /* Regla de Oro: 0px border radius */
+        .u-card, .u-btn, .u-input, .u-alert, .u-modal { border-radius: 0px !important; }
+
         .u-card {
             background-color: var(--dark-charcoal);
             border: 1px solid var(--charcoal);
-            border-radius: 0px;
+            padding: 40px;
         }
 
         .u-btn-primary {
             background-color: var(--bright-blue);
-            color: #FFFFFF;
+            color: white;
             height: 56px;
             padding: 0 32px;
-            border-radius: 0px;
             font-weight: 500;
-            transition: all 200ms ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border: none;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
         }
 
-        .u-btn-primary:hover {
-            background-color: var(--ubuntu-green);
-        }
+        .u-btn-primary:hover { background-color: var(--ubuntu-green); }
 
-        .u-btn-secondary {
+        .u-btn-outline {
             background-color: transparent;
-            border: 1px solid var(--charcoal);
-            color: #FFFFFF;
+            border: 1px solid var(--medium-gray);
+            color: white;
             height: 56px;
             padding: 0 32px;
-            border-radius: 0px;
-            font-weight: 500;
-            transition: all 200ms ease;
-            cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-        }
-
-        .u-btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-color: var(--ubuntu-blue);
+            cursor: pointer;
         }
 
         .u-input {
             background-color: #1A1A1A;
             border: 1px solid var(--charcoal);
-            color: #FFFFFF;
-            padding: 12px 16px;
-            border-radius: 0px;
-            outline: none;
+            color: white;
+            padding: 0 16px;
             width: 100%;
-            transition: border-color 0.2s;
+            height: 56px;
+            outline: none;
+            font-size: 16px;
         }
 
-        .u-input:focus {
-            border-color: var(--bright-blue);
+        .u-input:focus { border-color: var(--bright-blue); }
+
+        .u-alert-error {
+            background: rgba(199, 22, 43, 0.1);
+            border-left: 4px solid var(--error-red);
+            color: var(--error-red);
+            padding: 16px;
+            margin-bottom: 24px;
         }
 
-        .step-content { display: none; }
-        .step-content.active { display: block; animation: fadeIn 0.4s ease-out; }
-        
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(10px); } 
-            to { opacity: 1; transform: translateY(0); } 
+        /* Control de Vistas */
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Loader */
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #373737;
+            border-top: 3px solid var(--bright-blue);
+            border-radius: 50% !important; /* Excepción para loaders */
+            animation: spin 1s linear infinite;
         }
-
-        .radio-card:checked + label { 
-            border-color: var(--bright-blue); 
-            background: rgba(46, 150, 255, 0.05); 
-        }
-
-        .admin-panel { display: none; }
-        .admin-panel.active { display: block; }
-
-        /* Scrollbar estilo Ubuntu */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--near-black); }
-        ::-webkit-scrollbar-thumb { background: var(--charcoal); border: 2px solid var(--near-black); }
-        ::-webkit-scrollbar-thumb:hover { background: var(--ubuntu-blue); }
-
-        .tag-badge {
-            background: var(--near-black);
-            border: 1px solid var(--charcoal);
-            padding: 2px 8px;
-            font-size: 10px;
-            text-transform: uppercase;
-            color: var(--ubuntu-blue);
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <!-- Navegación Ubuntu Style -->
-    <nav class="h-[64px] bg-[#202020] border-b border-[#373737] flex justify-between items-center px-8 sticky top-0 z-50">
-        <div class="flex items-center gap-4 cursor-pointer" onclick="location.reload()">
+    <!-- Navegación -->
+    <nav class="h-[64px] bg-[#202020] border-b border-[#373737] flex justify-between items-center px-8">
+        <div class="flex items-center gap-4">
             <i class="fab fa-linux text-[#2E96FF] text-2xl"></i>
-            <div class="flex flex-col">
-                <span class="text-xl font-medium tracking-tight leading-none uppercase">DistroMatch</span>
-                <span class="text-[10px] text-[#6699CC] font-bold tracking-widest uppercase">System Admin v2.0</span>
-            </div>
+            <span class="text-xl font-medium tracking-tighter uppercase">DistroMatch <span class="font-light text-[#6699CC]">Pro</span></span>
         </div>
-        <button id="toggle-admin" class="u-btn-secondary !h-10 !px-4 text-[10px] font-bold">
-            <i class="fas fa-terminal mr-2"></i> MODO ADMIN
-        </button>
+        <div id="nav-auth-status" class="hidden flex items-center gap-4">
+            <span id="user-email-display" class="text-[10px] font-bold text-[#808080] uppercase tracking-widest"></span>
+            <button id="btn-logout" class="text-[10px] font-bold text-[#C7162B] uppercase hover:underline">Salir</button>
+        </div>
     </nav>
 
-    <main class="max-w-5xl mx-auto px-4 py-12">
+    <main class="max-w-4xl mx-auto px-4 py-16">
         
-        <!-- Banner de Estado Cloud -->
-        <div id="status-banner" class="hidden mb-8 p-4 border-l-4"></div>
-
-        <!-- VISTA DE USUARIO (WIZARD) -->
-        <div id="user-view">
-            <div class="u-card p-10 md:p-16">
-                <form id="wizard-form">
-                    <div id="step-indicator" class="text-[10px] font-bold text-[#6699CC] uppercase tracking-[0.4em] mb-10">Paso 1 de 3</div>
-                    
-                    <!-- Paso 1: Hardware -->
-                    <div class="step-content active" id="step-1">
-                        <h2 class="text-5xl font-light mb-6 tracking-tight">Arquitectura Base</h2>
-                        <p class="text-[#808080] mb-12 text-lg leading-relaxed">Analizaremos la capacidad de cómputo de tu estación de trabajo.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                            <div class="flex flex-col gap-3">
-                                <label class="text-[10px] font-bold uppercase text-[#6699CC] tracking-widest">Memoria RAM</label>
-                                <select name="ram" id="ram-select" class="u-input h-[56px] appearance-none">
-                                    <option value="low">Legacy / Low ( < 4GB )</option>
-                                    <option value="mid">Standard ( 8GB )</option>
-                                    <option value="high" selected>Performance ( 16GB+ )</option>
-                                </select>
-                            </div>
-                            <div class="flex flex-col gap-3">
-                                <label class="text-[10px] font-bold uppercase text-[#6699CC] tracking-widest">Unidad de Procesamiento</label>
-                                <select name="cpu" id="cpu-select" class="u-input h-[56px] appearance-none">
-                                    <option value="low">Entry Level (Celeron / Atom)</option>
-                                    <option value="mid">Mainstream (i3 / i5 / Ryzen 5)</option>
-                                    <option value="high" selected>High-End (i7 / i9 / Ryzen 9)</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Paso 2: GPU -->
-                    <div class="step-content" id="step-2">
-                        <h2 class="text-5xl font-light mb-6 tracking-tight">Subsistema Gráfico</h2>
-                        <p class="text-[#808080] mb-12 text-lg">Selecciona el fabricante de tu controlador de video primario.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <input type="radio" name="gpu" value="intel" id="gpu-intel" class="radio-card hidden" checked>
-                            <label for="gpu-intel" class="flex flex-col items-center justify-center p-10 border border-[#373737] cursor-pointer hover:border-[#6699CC] transition-all">
-                                <i class="fas fa-microchip text-4xl mb-6 text-[#2E96FF]"></i>
-                                <span class="text-xs font-bold uppercase tracking-widest">Intel Graphics</span>
-                            </label>
-                            
-                            <input type="radio" name="gpu" value="nvidia" id="gpu-nvidia" class="radio-card hidden">
-                            <label for="gpu-nvidia" class="flex flex-col items-center justify-center p-10 border border-[#373737] cursor-pointer hover:border-[#6699CC] transition-all">
-                                <i class="fas fa-server text-4xl mb-6 text-[#0E8420]"></i>
-                                <span class="text-xs font-bold uppercase tracking-widest">NVIDIA GeForce</span>
-                            </label>
-
-                            <input type="radio" name="gpu" value="amd" id="gpu-amd" class="radio-card hidden">
-                            <label for="gpu-amd" class="flex flex-col items-center justify-center p-10 border border-[#373737] cursor-pointer hover:border-[#6699CC] transition-all">
-                                <i class="fas fa-bolt text-4xl mb-6 text-[#C7162B]"></i>
-                                <span class="text-xs font-bold uppercase tracking-widest">AMD Radeon</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Paso 3: Objetivo -->
-                    <div class="step-content" id="step-3">
-                        <h2 class="text-5xl font-light mb-6 tracking-tight">Perfil Operativo</h2>
-                        <p class="text-[#808080] mb-12 text-lg">¿Cuál es el propósito principal de este despliegue?</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="radio" name="goal" value="casual" id="goal-casual" class="radio-card hidden" checked>
-                            <label for="goal-casual" class="p-8 border border-[#373737] cursor-pointer hover:border-[#6699CC]">
-                                <p class="font-medium text-xl">General Computing</p>
-                                <p class="text-xs text-[#808080] mt-2 uppercase tracking-tighter">Estabilidad / Multimedia / Office</p>
-                            </label>
-
-                            <input type="radio" name="goal" value="game" id="goal-game" class="radio-card hidden">
-                            <label for="goal-game" class="p-8 border border-[#373737] cursor-pointer hover:border-[#6699CC]">
-                                <p class="font-medium text-xl">High Performance Gaming</p>
-                                <p class="text-xs text-[#808080] mt-2 uppercase tracking-tighter">Kernel Low-latency / Steam / Drivers Pro</p>
-                            </label>
-
-                            <input type="radio" name="goal" value="dev" id="goal-dev" class="radio-card hidden">
-                            <label for="goal-dev" class="p-8 border border-[#373737] cursor-pointer hover:border-[#6699CC]">
-                                <p class="font-medium text-xl">Software Development</p>
-                                <p class="text-xs text-[#808080] mt-2 uppercase tracking-tighter">Docker / Compilación / Virtualización</p>
-                            </label>
-
-                            <input type="radio" name="goal" value="recovery" id="goal-recovery" class="radio-card hidden">
-                            <label for="goal-recovery" class="p-8 border border-[#373737] cursor-pointer hover:border-[#6699CC]">
-                                <p class="font-medium text-xl">System Recovery</p>
-                                <p class="text-xs text-[#808080] mt-2 uppercase tracking-tighter">Forense / Rescate / Live Tools</p>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="mt-20 flex justify-between">
-                        <button type="button" id="prev-btn" class="hidden u-btn-secondary">ANTERIOR</button>
-                        <button type="button" id="next-btn" class="ml-auto u-btn-primary">SIGUIENTE</button>
-                    </div>
-                </form>
-
-                <!-- VISTA RESULTADOS -->
-                <div id="results-view" class="hidden">
-                    <div id="main-result-container"></div>
-                    <div class="mt-16 pt-16 border-t border-[#373737]">
-                        <h4 class="text-[10px] font-bold text-[#6699CC] uppercase tracking-[0.4em] mb-10 text-center">Nodos Secundarios Compatibles</h4>
-                        <div id="alternatives-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-                    </div>
-                    <div class="mt-16 text-center">
-                        <button onclick="location.reload()" class="u-btn-secondary !px-12 text-xs">REINICIAR ESCANEO</button>
-                    </div>
-                </div>
+        <!-- 1. PANTALLA DE CARGA INICIAL -->
+        <section id="view-loading" class="view-section active text-center py-20">
+            <div class="flex flex-col items-center gap-6">
+                <div class="loader"></div>
+                <p class="text-[10px] font-bold tracking-[0.3em] text-[#6699CC] uppercase">Verificando Credenciales</p>
             </div>
-        </div>
+        </section>
 
-        <!-- PANEL DE ADMIN (BACKEND) -->
-        <div id="admin-view" class="admin-panel space-y-12">
-            <!-- Formulario de Entrada -->
-            <div class="u-card p-10">
-                <div class="flex justify-between items-center mb-10">
-                    <h2 class="text-3xl font-light tracking-tight flex items-center gap-4">
-                        <i class="fas fa-database text-[#2E96FF]"></i> Gestión de Repositorio
-                    </h2>
-                    <span class="text-[10px] bg-white/5 px-4 py-1 text-[#6699CC] font-bold tracking-widest border border-white/10">CLOUD CONNECTED</span>
-                </div>
+        <!-- 2. PANTALLA DE ACCESO (Si no hay sesión) -->
+        <section id="view-gate" class="view-section text-center max-w-md mx-auto">
+            <div class="u-card">
+                <h1 class="text-4xl font-light mb-4 tracking-tight leading-none">Acceso Restringido</h1>
+                <p class="text-[#808080] mb-10 text-sm">Este sistema requiere autenticación de administrador para operar la base de datos de distribuciones.</p>
                 
-                <form id="add-distro-form" class="space-y-8">
+                <div id="login-error" class="hidden u-alert-error mb-6 text-left text-xs"></div>
+
+                <form id="login-form" class="space-y-4">
+                    <input type="email" id="email" class="u-input" placeholder="Usuario de Sistema" required>
+                    <input type="password" id="pass" class="u-input" placeholder="Clave de Seguridad" required>
+                    <button type="submit" class="u-btn-primary w-full">Desbloquear</button>
+                </form>
+                
+                <p class="mt-8 text-[9px] text-[#555] uppercase tracking-widest font-bold">Protocolo de Seguridad v4.2</p>
+            </div>
+        </section>
+
+        <!-- 3. PANEL DE ADMINISTRACIÓN (Si hay sesión) -->
+        <section id="view-admin" class="view-section space-y-8">
+            <div class="u-card">
+                <h2 class="text-3xl font-light mb-8">Gestor de Distribuciones</h2>
+                <form id="distro-form" class="space-y-6">
                     <input type="hidden" id="edit-id">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="flex flex-col gap-3">
-                            <label class="text-[10px] font-bold text-[#6699CC] uppercase tracking-widest">Nombre del Sistema</label>
-                            <input type="text" id="distro-name" placeholder="Ubuntu 24.04.1 LTS" class="u-input h-[56px]" required>
-                        </div>
-                        <div class="flex flex-col gap-3">
-                            <label class="text-[10px] font-bold text-[#6699CC] uppercase tracking-widest">Punto de Descarga (ISO)</label>
-                            <input type="url" id="distro-url" placeholder="https://ubuntu.com/download/desktop" class="u-input h-[56px]" required>
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="name" class="u-input" placeholder="Nombre (ej. Debian 12)" required>
+                        <input type="url" id="url" class="u-input" placeholder="URL ISO (https://...)" required>
                     </div>
-                    <div class="flex flex-col gap-3">
-                        <label class="text-[10px] font-bold text-[#6699CC] uppercase tracking-widest">Especificaciones de Despliegue</label>
-                        <textarea id="distro-desc" placeholder="Describe el kernel, entorno de escritorio y público objetivo..." class="u-input h-32" required></textarea>
+                    <textarea id="desc" class="u-input h-32 py-4" placeholder="Descripción técnica detallada..." required></textarea>
+                    
+                    <div class="p-6 bg-[#1A1A1A] border border-[#373737]">
+                        <p class="text-[10px] font-bold text-[#6699CC] uppercase mb-4 tracking-widest">Atributos de Hardware (Separados por coma)</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="tag-cpu" class="u-input !h-12 text-sm" placeholder="CPU: low, mid, high">
+                            <input type="text" id="tag-ram" class="u-input !h-12 text-sm" placeholder="RAM: low, mid, high">
+                        </div>
                     </div>
                     
-                    <div class="bg-[#202020] p-8 border border-[#373737]">
-                        <p class="text-[10px] font-bold text-[#808080] uppercase tracking-[0.3em] mb-8">Matriz de Compatibilidad (Valores separados por coma)</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <div class="flex flex-col gap-2">
-                                <label class="text-[9px] text-[#6699CC] font-bold uppercase">CPU Tags</label>
-                                <input type="text" id="distro-cpu" placeholder="low, mid, high" class="u-input !text-xs">
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <label class="text-[9px] text-[#6699CC] font-bold uppercase">RAM Tags</label>
-                                <input type="text" id="distro-ram" placeholder="low, mid, high" class="u-input !text-xs">
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <label class="text-[9px] text-[#6699CC] font-bold uppercase">GPU Tags</label>
-                                <input type="text" id="distro-gpu" placeholder="intel, nvidia, amd" class="u-input !text-xs">
-                            </div>
-                            <div class="flex flex-col gap-2">
-                                <label class="text-[9px] text-[#6699CC] font-bold uppercase">Goal Tags</label>
-                                <input type="text" id="distro-goal" placeholder="casual, game, dev" class="u-input !text-xs">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-4">
-                        <button type="submit" id="save-btn" class="u-btn-primary flex-1">SINCRONIZAR NUBE</button>
-                        <button type="button" id="cancel-edit" class="hidden u-btn-secondary !px-8">CANCELAR</button>
-                    </div>
+                    <button type="submit" id="btn-save" class="u-btn-primary w-full">Sincronizar con Firebase</button>
                 </form>
             </div>
 
-            <!-- Lista de Resultados en BD -->
-            <div class="u-card p-10">
-                <div class="flex justify-between items-end mb-8">
-                    <h3 class="text-xl font-light tracking-tight">Instancias Activas en Servidor</h3>
-                    <div class="text-[10px] font-medium text-[#808080]">TOTAL: <span id="count-distros" class="text-white">0</span> NODOS</div>
-                </div>
-                <div id="admin-list" class="space-y-3 max-h-[600px] overflow-y-auto pr-2">
+            <div class="u-card">
+                <h3 class="text-xs font-bold text-[#6699CC] uppercase tracking-[0.2em] mb-6">Registros en el Repositorio</h3>
+                <div id="distro-list" class="space-y-2">
                     <!-- Dinámico -->
                 </div>
             </div>
-        </div>
+        </section>
 
     </main>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-ubuntu-v2';
-        const firebaseConfig = {
-  apiKey: "TU_API_KEY_AQUÍ",
-  authDomain: "TU_AUTH_DOMAIN_AQUÍ",
-  projectId: "TU_PROJECT_ID_AQUÍ",
-  storageBucket: "TU_STORAGE_BUCKET_AQUÍ",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID_AQUÍ",
-  appId: "TU_APP_ID_AQUÍ"
-};
-        
+        const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
         const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-blindado';
 
         let distros = [];
-        let currentStep = 1;
-        const statusBanner = document.getElementById('status-banner');
-        const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'distros');
+        let unsubscribe = null;
 
-        const showStatus = (msg, type = 'error') => {
-            statusBanner.classList.remove('hidden', 'bg-[rgba(199,22,43,0.1)]', 'border-[#C7162B]', 'text-[#C7162B]', 'bg-[rgba(14,132,32,0.1)]', 'border-[#0E8420]', 'text-[#0E8420]');
-            if (type === 'error') {
-                statusBanner.classList.add('bg-[rgba(199,22,43,0.1)]', 'border-[#C7162B]', 'text-[#C7162B]');
-                statusBanner.innerHTML = `<i class="fas fa-exclamation-triangle mr-3"></i> ${msg}`;
-            } else {
-                statusBanner.classList.add('bg-[rgba(14,132,32,0.1)]', 'border-[#0E8420]', 'text-[#0E8420]');
-                statusBanner.innerHTML = `<i class="fas fa-check-circle mr-3"></i> ${msg}`;
-            }
-            setTimeout(() => statusBanner.classList.add('hidden'), 5000);
-        };
+        // VISTAS
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
 
-        const startSync = () => {
-            onSnapshot(colRef, (snapshot) => {
-                distros = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderAdminList();
-                document.getElementById('count-distros').innerText = distros.length;
-            }, (error) => {
-                if (error.code === 'permission-denied') {
-                    showStatus("Error de Acceso: Configura las Reglas de Firestore para lectura/escritura pública.");
-                }
-            });
-        };
-
-        // Auth Logic (MANDATORY RULE 3)
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (err) {
-                showStatus("Fallo en la conexión de identidad.");
-            }
-        };
-
-        initAuth();
+        // CONTROL DE SESIÓN REAL
         onAuthStateChanged(auth, (user) => {
-            if (user) startSync();
+            if (user) {
+                // Usuario logueado: Mostrar Admin
+                document.getElementById('nav-auth-status').classList.remove('hidden');
+                document.getElementById('user-email-display').innerText = user.email;
+                showView('view-admin');
+                startFirestoreSync();
+            } else {
+                // No hay usuario: Mostrar Gate de Login
+                document.getElementById('nav-auth-status').classList.add('hidden');
+                showView('view-gate');
+                if (unsubscribe) unsubscribe();
+            }
         });
 
-        // ADMIN ACTIONS
-        const form = document.getElementById('add-distro-form');
-        form.onsubmit = async (e) => {
+        // SINCRONIZACIÓN SÓLO TRAS LOGIN
+        function startFirestoreSync() {
+            const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'distros');
+            // Al no haber anónimo, si el usuario no es admin, Firebase cortará la conexión aquí por reglas.
+            unsubscribe = onSnapshot(colRef, 
+                (snap) => {
+                    distros = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                    renderList();
+                },
+                (err) => {
+                    console.error("Firestore Access Denied:", err.message);
+                    // Si falla la lectura siendo admin, es problema de reglas
+                    if (auth.currentUser) {
+                        const errDiv = document.getElementById('login-error');
+                        errDiv.innerText = "Error de permisos en base de datos. Revisa las reglas de Firestore.";
+                        errDiv.classList.remove('hidden');
+                    }
+                }
+            );
+        }
+
+        // LOGIN MANUAL
+        document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
-            const editId = document.getElementById('edit-id').value;
+            const btn = e.target.querySelector('button');
+            const errDiv = document.getElementById('login-error');
+            
+            btn.disabled = true;
+            btn.innerText = "Verificando...";
+            errDiv.classList.add('hidden');
+
+            try {
+                const email = document.getElementById('email').value;
+                const pass = document.getElementById('pass').value;
+                await signInWithEmailAndPassword(auth, email, pass);
+            } catch (err) {
+                errDiv.innerText = "Acceso denegado. Las credenciales no coinciden con un administrador.";
+                errDiv.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerText = "Desbloquear";
+            }
+        };
+
+        // LOGOUT
+        document.getElementById('btn-logout').onclick = () => {
+            signOut(auth).then(() => location.reload());
+        };
+
+        // GESTIÓN DE DATOS (CRUD)
+        const distroForm = document.getElementById('distro-form');
+        distroForm.onsubmit = async (e) => {
+            e.preventDefault();
+            if (!auth.currentUser) return;
+
+            const id = document.getElementById('edit-id').value;
             const data = {
-                name: document.getElementById('distro-name').value,
-                url: document.getElementById('distro-url').value,
-                desc: document.getElementById('distro-desc').value,
+                name: document.getElementById('name').value,
+                url: document.getElementById('url').value,
+                desc: document.getElementById('desc').value,
                 tags: {
-                    cpu: document.getElementById('distro-cpu').value.split(',').map(t => t.trim().toLowerCase()),
-                    ram: document.getElementById('distro-ram').value.split(',').map(t => t.trim().toLowerCase()),
-                    gpu: document.getElementById('distro-gpu').value.split(',').map(t => t.trim().toLowerCase()),
-                    goal: document.getElementById('distro-goal').value.split(',').map(t => t.trim().toLowerCase()),
+                    cpu: document.getElementById('tag-cpu').value.split(',').map(t => t.trim().toLowerCase()),
+                    ram: document.getElementById('tag-ram').value.split(',').map(t => t.trim().toLowerCase())
                 }
             };
 
             try {
-                if (editId) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', editId), data);
-                    showStatus("Distribución actualizada correctamente.", "success");
+                if (id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id), data);
                 } else {
-                    await addDoc(colRef, data);
-                    showStatus("Nueva distribución añadida al repositorio.", "success");
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'distros'), data);
                 }
-                form.reset();
-                resetAdminForm();
+                distroForm.reset();
+                document.getElementById('edit-id').value = "";
+                document.getElementById('btn-save').innerText = "Sincronizar con Firebase";
             } catch (err) {
-                showStatus("Error al guardar en la nube: Verifica los permisos de Firestore.");
+                alert("Error al escribir: " + err.message);
             }
         };
 
-        function resetAdminForm() {
-            document.getElementById('edit-id').value = '';
-            document.getElementById('save-btn').innerText = "SINCRONIZAR NUBE";
-            document.getElementById('cancel-edit').classList.add('hidden');
-        }
-
-        function renderAdminList() {
-            const list = document.getElementById('admin-list');
-            if (distros.length === 0) {
-                list.innerHTML = `<div class="p-8 border border-dashed border-[#373737] text-center text-[#808080] text-sm">Repositorio vacío. Añade una distro arriba.</div>`;
-                return;
-            }
+        function renderList() {
+            const list = document.getElementById('distro-list');
             list.innerHTML = distros.map(d => `
-                <div class="flex items-center justify-between p-5 bg-[#2A2A2A] border border-[#373737] hover:border-[#6699CC] transition-colors group">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3">
-                            <p class="font-medium text-white">${d.name}</p>
-                            <span class="text-[9px] text-[#6699CC] bg-[#1A1A1A] px-2 py-0.5 border border-[#373737] uppercase font-bold">${d.tags.goal[0] || 'GENERAL'}</span>
-                        </div>
-                        <div class="flex gap-2 mt-2">
-                            ${d.tags.cpu.map(t => `<span class="tag-badge">CPU:${t}</span>`).join('')}
-                            ${d.tags.ram.map(t => `<span class="tag-badge">RAM:${t}</span>`).join('')}
-                        </div>
+                <div class="flex items-center justify-between p-5 bg-[#1A1A1A] border border-[#373737] group hover:border-[#6699CC] transition-colors">
+                    <div>
+                        <p class="font-bold text-sm tracking-wide uppercase">${d.name}</p>
+                        <p class="text-[9px] text-[#6699CC] font-bold mt-1 uppercase tracking-widest">${d.tags.cpu.join(' | ')}</p>
                     </div>
-                    <div class="flex gap-2 opacity-30 group-hover:opacity-100 transition-opacity">
-                        <button onclick="window.editDistro('${d.id}')" class="u-btn-secondary !h-10 !px-4 !text-[10px] border-[#373737] hover:border-[#2E96FF]">EDITAR</button>
-                        <button onclick="window.deleteDistro('${d.id}')" class="u-btn-secondary !h-10 !px-4 !text-[10px] border-[#373737] hover:border-[#C7162B] hover:text-[#C7162B]">BORRAR</button>
+                    <div class="flex gap-6">
+                        <button onclick="window.editDistro('${d.id}')" class="text-[10px] font-bold text-[#2E96FF] uppercase tracking-widest hover:underline">Editar</button>
+                        <button onclick="window.deleteDistro('${d.id}')" class="text-[10px] font-bold text-[#C7162B] uppercase tracking-widest hover:underline">Borrar</button>
                     </div>
                 </div>
             `).join('');
         }
 
         window.editDistro = (id) => {
-            const d = distros.find(item => item.id === id);
-            if (!d) return;
+            const d = distros.find(x => x.id === id);
             document.getElementById('edit-id').value = d.id;
-            document.getElementById('distro-name').value = d.name;
-            document.getElementById('distro-url').value = d.url;
-            document.getElementById('distro-desc').value = d.desc;
-            document.getElementById('distro-cpu').value = d.tags.cpu.join(', ');
-            document.getElementById('distro-ram').value = d.tags.ram.join(', ');
-            document.getElementById('distro-gpu').value = d.tags.gpu.join(', ');
-            document.getElementById('distro-goal').value = d.tags.goal.join(', ');
-            document.getElementById('save-btn').innerText = "GUARDAR CAMBIOS";
-            document.getElementById('cancel-edit').classList.remove('hidden');
-            document.getElementById('admin-view').scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('name').value = d.name;
+            document.getElementById('url').value = d.url;
+            document.getElementById('desc').value = d.desc;
+            document.getElementById('tag-cpu').value = d.tags.cpu.join(', ');
+            document.getElementById('tag-ram').value = d.tags.ram.join(', ');
+            document.getElementById('btn-save').innerText = "Actualizar Registro";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.deleteDistro = async (id) => {
-            if (confirm("¿Confirmar eliminación permanente de este registro?")) {
-                try {
-                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id));
-                    showStatus("Registro eliminado.", "success");
-                } catch(e) { showStatus("Error al eliminar."); }
+            if (confirm("Confirmar borrado en el servidor cloud?")) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'distros', id));
             }
-        };
-
-        document.getElementById('cancel-edit').onclick = () => { form.reset(); resetAdminForm(); };
-
-        // NAVEGACIÓN ENTRE VISTAS
-        const toggleBtn = document.getElementById('toggle-admin');
-        toggleBtn.onclick = () => {
-            const isAdmin = document.getElementById('admin-view').classList.toggle('active');
-            document.getElementById('user-view').style.display = isAdmin ? 'none' : 'block';
-            toggleBtn.innerHTML = isAdmin ? '<i class="fas fa-user mr-2"></i> MODO USUARIO' : '<i class="fas fa-terminal mr-2"></i> MODO ADMIN';
-            toggleBtn.style.borderColor = isAdmin ? 'var(--ubuntu-blue)' : 'var(--charcoal)';
-        };
-
-        // WIZARD LOGIC
-        const nextBtn = document.getElementById('next-btn');
-        const prevBtn = document.getElementById('prev-btn');
-
-        nextBtn.onclick = () => {
-            if (currentStep < 3) {
-                document.getElementById(`step-${currentStep}`).classList.remove('active');
-                currentStep++;
-                document.getElementById(`step-${currentStep}`).classList.add('active');
-                updateSteps();
-            } else calculateResults();
-        };
-
-        prevBtn.onclick = () => {
-            if (currentStep > 1) {
-                document.getElementById(`step-${currentStep}`).classList.remove('active');
-                currentStep--;
-                document.getElementById(`step-${currentStep}`).classList.add('active');
-                updateSteps();
-            }
-        };
-
-        function updateSteps() {
-            document.getElementById('step-indicator').innerText = `Paso ${currentStep} de 3`;
-            prevBtn.classList.toggle('hidden', currentStep === 1);
-            nextBtn.innerText = currentStep === 3 ? "ANALIZAR COMPATIBILIDAD" : "SIGUIENTE";
-        }
-
-        function calculateResults() {
-            const formData = new FormData(document.getElementById('wizard-form'));
-            const user = {
-                cpu: formData.get('cpu'),
-                ram: formData.get('ram'),
-                gpu: formData.get('gpu'),
-                goal: formData.get('goal')
-            };
-
-            const scored = distros.map(d => {
-                let s = 0;
-                if (d.tags.cpu.includes(user.cpu)) s += 5;
-                if (d.tags.ram.includes(user.ram)) s += 5;
-                if (d.tags.gpu.includes(user.gpu)) s += 5;
-                if (d.tags.goal.includes(user.goal)) s += 20; // Puntos críticos para el objetivo
-                return { ...d, score: s };
-            }).filter(d => d.score > 0).sort((a, b) => b.score - a.score);
-
-            document.getElementById('wizard-form').classList.add('hidden');
-            document.getElementById('results-view').classList.remove('hidden');
-
-            const winner = scored[0];
-            const mainContainer = document.getElementById('main-result-container');
-            
-            if (!winner) {
-                mainContainer.innerHTML = `
-                    <div class="mt-8 border border-[#C7162B] bg-[rgba(199,22,43,0.05)] p-12 text-center">
-                        <i class="fas fa-search-minus text-4xl mb-4 text-[#C7162B]"></i>
-                        <p class="text-xl font-light">No se han encontrado nodos compatibles en el repositorio actual.</p>
-                        <p class="text-xs text-[#808080] mt-4 uppercase tracking-widest">Accede al Modo Admin para cargar datos.</p>
-                    </div>`;
-                return;
-            }
-
-            mainContainer.innerHTML = `
-                <div class="mt-8 border-l-8 border-[#2E96FF] bg-[#202020] p-12 relative overflow-hidden">
-                    <div class="absolute -right-16 -bottom-16 text-[15rem] text-white/5 pointer-events-none">
-                        <i class="fab fa-linux"></i>
-                    </div>
-                    <div class="relative z-10">
-                        <div class="flex items-center gap-4 mb-6">
-                            <span class="px-3 py-1 bg-[#2E96FF] text-[10px] font-bold tracking-[0.2em]">MATCH PRIORITARIO</span>
-                            <span class="text-[#808080] text-[10px] font-bold">RELIABILITY: ${Math.round((winner.score/35)*100)}%</span>
-                        </div>
-                        <h3 class="text-7xl font-bold mb-8 tracking-tighter">${winner.name}</h3>
-                        <p class="text-2xl text-[#B0B0B0] max-w-3xl mb-12 leading-relaxed font-light">${winner.desc}</p>
-                        <div class="flex flex-wrap gap-6">
-                            <a href="${winner.url}" target="_blank" class="u-btn-primary !h-[64px] !px-12 text-sm tracking-[0.2em]">
-                                OBTENER IMAGEN ISO
-                            </a>
-                            <div class="flex items-center gap-4 px-8 border border-[#373737] text-xs">
-                                <span class="text-[#6699CC] font-bold uppercase tracking-widest">Calculated Affinity</span>
-                                <span class="text-white font-bold text-lg">${winner.score} PKT</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            const altContainer = document.getElementById('alternatives-container');
-            altContainer.innerHTML = scored.slice(1, 5).map(alt => `
-                <div class="flex items-center justify-between p-8 bg-[#2A2A2A] border border-[#373737] hover:border-[#6699CC] transition-all">
-                    <div>
-                        <p class="font-bold text-white uppercase text-base tracking-tight">${alt.name}</p>
-                        <div class="flex gap-2 mt-2">
-                            <span class="text-[9px] text-[#808080] uppercase tracking-widest">Afinidad: ${Math.round((alt.score/35)*100)}%</span>
-                        </div>
-                    </div>
-                    <a href="${alt.url}" target="_blank" class="u-btn-secondary !h-10 !w-10 !p-0 flex items-center justify-center border-white/10 hover:border-[#2E96FF]">
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            `).join('');
-        }
-
-        // Auto-detección de hardware
-        window.onload = () => {
-            const mem = navigator.deviceMemory || 4;
-            if (mem >= 12) document.getElementById('ram-select').value = 'high';
-            else if (mem >= 6) document.getElementById('ram-select').value = 'mid';
-            else document.getElementById('ram-select').value = 'low';
         };
     </script>
 </body>
 </html>
+```
+
+### Por qué esto soluciona tu problema:
+1.  **Sin "Anónimo", sin errores:** Al desactivar el acceso anónimo, Firebase rechaza cualquier intento de lectura sin token. Mi código ahora **espera** a que `onAuthStateChanged` devuelva un usuario válido antes de hacer `onSnapshot`.
+2.  **Solicitud de credenciales inmediata:** Al entrar a la web, verás un loader breve y luego, obligatoriamente, la pantalla de "Acceso Restringido". No hay forma de ver el contenido si no te logueas.
+3.  **Seguridad de Reglas:** Si en tu consola de Firebase tienes las reglas:
+    ```javascript
+    allow read, write: if request.auth != null;
