@@ -3,108 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recomendador Linux</title>
+    <title>DistroMatch - Tu Linux Ideal</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; transition: background 0.5s ease; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .radio-card:checked + label { border-color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+    </style>
 </head>
-<body class="bg-gray-900 text-white font-sans min-h-screen flex items-center justify-center">
+<body class="bg-slate-950 text-slate-200 min-h-screen">
 
-    <div class="max-w-md w-full bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700">
-        <h2 class="text-2xl font-bold mb-6 text-center text-blue-400">Encuentra tu Distro Linux</h2>
-        
-        <form id="linuxForm" class="space-y-6">
-            <!-- Detección automática informativa -->
-            <div class="bg-gray-700 p-4 rounded-lg text-sm text-gray-300">
-                <span class="font-semibold text-blue-300">Detectado automáticamente:</span>
-                <ul class="list-disc pl-5 mt-1 space-y-1">
-                    <li>Núcleos de CPU: <span id="det-cpu" class="font-bold text-white">-</span></li>
-                    <li>RAM aproximada: <span id="det-ram" class="font-bold text-white">-</span> GB</li>
-                </ul>
+    <nav class="p-6 flex justify-between items-center max-w-5xl mx-auto">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-2 rounded-lg">
+                <i class="fas fa-linux text-white text-xl"></i>
             </div>
-
-            <!-- Entrada de RAM -->
-            <div>
-                <label class="block text-sm font-medium mb-2">¿Cuánta memoria RAM tienes?</label>
-                <select id="ram" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
-                    <option value="low">Menos de 2 GB (PC muy antiguo)</option>
-                    <option value="mid">Entre 2 GB y 6 GB (PC antiguo / básico)</option>
-                    <option value="high">8 GB o más (PC moderno)</option>
-                </select>
-            </div>
-
-            <!-- Entrada de GPU -->
-            <div>
-                <label class="block text-sm font-medium mb-2">¿Qué tarjeta gráfica utiliza tu PC?</label>
-                <select id="gpu" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2.5 text-white focus:ring-blue-500 focus:border-blue-500">
-                    <option value="intel">Intel / Gráfica integrada estándar</option>
-                    <option value="amd">AMD Radeon</option>
-                    <option value="nvidia">NVIDIA (Requiere drivers privativos)</option>
-                </select>
-            </div>
-
-            <!-- Botón de acción -->
-            <button type="button" onclick="calcularRecomendacion()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors">
-                Obtener recomendación
-            </button>
-        </form>
-
-        <!-- Contenedor de Resultado -->
-        <div id="resultado" class="hidden mt-6 p-4 bg-blue-950 border border-blue-800 rounded-lg text-center">
-            <h3 class="text-xl font-semibold mb-2 text-blue-300">Tu opción ideal es:</h3>
-            <p id="distroName" class="text-3xl font-extrabold text-white mb-2">Linux Mint</p>
-            <p id="distroDesc" class="text-sm text-gray-300"></p>
+            <span class="text-xl font-bold tracking-tight">DistroMatch</span>
         </div>
-    </div>
+        <div id="step-indicator" class="text-sm font-medium text-slate-500 uppercase tracking-widest">Paso 1 de 4</div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Contenedor Principal -->
+        <div class="glass rounded-3xl p-8 shadow-2xl">
+            
+            <form id="wizard-form">
+                <div class="step-content active" id="step-1">
+                    <h2 class="text-3xl font-bold mb-2">Hablemos de potencia</h2>
+                    <p class="text-slate-400 mb-8">Hemos detectado algunos datos, pero confírmalos tú mismo.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- RAM -->
+                        <div class="space-y-3">
+                            <label class="block text-sm font-semibold text-blue-400 uppercase">Memoria RAM</label>
+                            <select name="ram" id="ram-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500 transition-all">
+                                <option value="low">Menos de 4 GB (Antiguo)</option>
+                                <option value="mid">4 GB - 8 GB (Estándar)</option>
+                                <option value="high" selected>16 GB o más (Moderno)</option>
+                            </select>
+                        </div>
+                        <!-- CPU -->
+                        <div class="space-y-3">
+                            <label class="block text-sm font-semibold text-blue-400 uppercase">Procesador (CPU)</label>
+                            <select name="cpu" id="cpu-select" class="w-full bg-slate-800 border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500 transition-all">
+                                <option value="low">Baja gama (Atom, Celeron, Core 2 Duo)</option>
+                                <option value="mid">Gama Media (i3, i5, Ryzen 3/5)</option>
+                                <option value="high" selected>Gama Alta (i7, i9, Ryzen 7/9)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 p-4 bg-blue-500/10 rounded-xl border border-blue-500/20 flex items-center gap-4">
+                        <i class="fas fa-robot text-blue-400"></i>
+                        <p class="text-sm text-blue-200">
+                            Auto-detección: Tu sistema parece tener <span id="auto-cpu" class="font-bold">?</span> núcleos y unos <span id="auto-ram" class="font-bold">?</span> GB de RAM.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step-content" id="step-2">
+                    <h2 class="text-3xl font-bold mb-2">¿Y los gráficos?</h2>
+                    <p class="text-slate-400 mb-8">Esto determina qué drivers necesitaremos pre-instalar.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="radio" name="gpu" value="intel" id="gpu-intel" class="radio-card hidden" checked>
+                        <label for="gpu-intel" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all">
+                            <i class="fas fa-microchip text-3xl mb-3"></i>
+                            <span class="font-bold text-center text-sm uppercase">Intel / Integrada</span>
+                        </label>
+
+                        <input type="radio" name="gpu" value="nvidia" id="gpu-nvidia" class="radio-card hidden">
+                        <label for="gpu-nvidia" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all">
+                            <i class="fab fa-envira text-3xl mb-3 text-green-500"></i>
+                            <span class="font-bold text-center text-sm uppercase">NVIDIA (Geforce)</span>
+                        </label>
+
+                        <input type="radio" name="gpu" value="amd" id="gpu-amd" class="radio-card hidden">
+                        <label for="gpu-amd" class="flex flex-col items-center p-6 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all">
+                            <i class="fas fa-bolt text-3xl mb-3 text-red-500"></i>
+                            <span class="font-bold text-center text-sm uppercase">AMD (Radeon)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="step-content" id="step-3">
+                    <h2 class="text-3xl font-bold mb-2">¿Cuál es tu misión?</h2>
+                    <p class="text-slate-400 mb-8">Dinos qué planeas hacer principalmente en Linux.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="radio" name="goal" value="casual" id="goal-casual" class="radio-card hidden" checked>
+                        <label for="goal-casual" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
+                            <i class="fas fa-mug-hot text-2xl text-amber-400 w-10 text-center"></i>
+                            <div>
+                                <p class="font-bold">Uso Casual</p>
+                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Navegar, YouTube, Ofimática</p>
+                            </div>
+                        </label>
+
+                        <input type="radio" name="goal" value="gaming" id="goal-gaming" class="radio-card hidden">
+                        <label for="goal-gaming" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
+                            <i class="fas fa-gamepad text-2xl text-purple-400 w-10 text-center"></i>
+                            <div>
+                                <p class="font-bold">Gaming</p>
+                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Steam, FPS, Emulación</p>
+                            </div>
+                        </label>
+
+                        <input type="radio" name="goal" value="work" id="goal-work" class="radio-card hidden">
+                        <label for="goal-work" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
+                            <i class="fas fa-code text-2xl text-blue-400 w-10 text-center"></i>
+                            <div>
+                                <p class="font-bold">Trabajo / Dev</p>
+                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Docker, Python, Estabilidad</p>
+                            </div>
+                        </label>
+
+                        <input type="radio" name="goal" value="media" id="goal-media" class="radio-card hidden">
+                        <label for="goal-media" class="flex items-center gap-4 p-5 border-2 border-slate-700 rounded-2xl cursor-pointer hover:border-slate-500 transition-all text-left">
+                            <i class="fas fa-film text-2xl text-red-400 w-10 text-center"></i>
+                            <div>
+                                <p class="font-bold">Diseño / Media</p>
+                                <p class="text-xs text-slate-400 uppercase tracking-tighter">Edición Video, Audio, Arte</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mt-12 flex justify-between gap-4">
+                    <button type="button" id="prev-btn" class="hidden px-8 py-3 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                        Atrás
+                    </button>
+                    <button type="button" id="next-btn" class="ml-auto px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-500/20">
+                        Siguiente paso
+                    </button>
+                </div>
+            </form>
+
+            <div id="results-view" class="hidden text-center py-4">
+                <div class="mb-8">
+                    <h2 class="text-4xl font-extrabold text-white mb-2">¡Tu Distro Perfecta!</h2>
+                    <p class="text-slate-400 uppercase tracking-widest text-sm">Basado en tu perfil de hardware y uso</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-3xl shadow-2xl relative overflow-hidden text-left mb-8">
+                    <div class="absolute -right-10 -bottom-10 text-9xl text-white/10 rotate-12">
+                        <i class="fas fa-linux"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <span id="res-badge" class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase mb-4 inline-block tracking-wider">Altamente Recomendada</span>
+                        <h3 id="res-name" class="text-5xl font-black mb-4">Pop!_OS</h3>
+                        <p id="res-desc" class="text-lg text-blue-50 max-w-lg mb-8">La mejor opción para gaming con NVIDIA. Viene con los drivers preinstalados y un gestor de ventanas excelente para la productividad.</p>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#" id="res-link" target="_blank" class="bg-white text-blue-900 px-8 py-4 rounded-xl font-bold hover:scale-105 transition-transform flex items-center gap-2">
+                                <i class="fas fa-download"></i> Descargar ISO
+                            </a>
+                            <button onclick="location.reload()" class="bg-blue-800/50 border border-white/20 text-white px-8 py-4 rounded-xl font-bold hover:bg-blue-800 transition-all">
+                                <i class="fas fa-redo"></i> Volver a empezar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-left">
+                    <h4 class="font-bold text-slate-400 uppercase text-xs mb-4 tracking-widest">Otras grandes alternativas:</h4>
+                    <div id="alternatives-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-medium">
+                        <!-- Alternativas dinámicas -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
 
     <script>
-        // 1. Autofill al cargar la página
-        document.addEventListener("DOMContentLoaded", () => {
-            const cores = navigator.hardwareConcurrency || "No detectado";
-            const memory = navigator.deviceMemory || "No detectado";
-            
-            document.getElementById('det-cpu').innerText = cores;
-            document.getElementById('det-ram').innerText = memory;
+        // --- BASE DE DATOS DE DISTRIBUCIONES ---
+        const distros = [
+            { 
+                name: "Pop!_OS", 
+                desc: "Ideal para gaming y usuarios de NVIDIA. Excelente gestión de ventanas y muy moderna.", 
+                url: "https://pop.system76.com/", 
+                score: 0,
+                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['nvidia', 'amd'], goal: ['gaming', 'work'] }
+            },
+            { 
+                name: "Linux Mint (Cinnamon)", 
+                desc: "La mejor para principiantes que vienen de Windows. Súper estable, elegante y fácil de configurar.", 
+                url: "https://linuxmint.com/", 
+                score: 0,
+                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['casual', 'work'] }
+            },
+            { 
+                name: "Nobara Project", 
+                desc: "Creada por ingenieros de Red Hat específicamente para jugar. Rendimiento extremo en Steam.", 
+                url: "https://nobaraproject.org/", 
+                score: 0,
+                tags: { cpu: ['high'], ram: ['high'], gpu: ['amd', 'nvidia'], goal: ['gaming'] }
+            },
+            { 
+                name: "Lubuntu", 
+                desc: "Extremadamente ligera. Ideal para revivir PCs que creías muertos.", 
+                url: "https://lubuntu.me/", 
+                score: 0,
+                tags: { cpu: ['low'], ram: ['low'], gpu: ['intel'], goal: ['casual'] }
+            },
+            { 
+                name: "Fedora Workstation", 
+                desc: "La vanguardia de Linux. Ideal para desarrolladores que quieren lo último en tecnología.", 
+                url: "https://getfedora.org/", 
+                score: 0,
+                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd'], goal: ['work', 'media'] }
+            },
+            { 
+                name: "Ubuntu LTS", 
+                desc: "El estándar de la industria. Lo que sea que busques, funciona en Ubuntu.", 
+                url: "https://ubuntu.com/download/desktop", 
+                score: 0,
+                tags: { cpu: ['mid', 'high'], ram: ['mid', 'high'], gpu: ['intel', 'amd', 'nvidia'], goal: ['work', 'casual', 'media'] }
+            },
+            { 
+                name: "Zorin OS Lite", 
+                desc: "Interfaz preciosa pero adaptada a equipos antiguos con pocos recursos.", 
+                url: "https://zorin.com/os/download/", 
+                score: 0,
+                tags: { cpu: ['low', 'mid'], ram: ['low', 'mid'], gpu: ['intel'], goal: ['casual'] }
+            },
+            { 
+                name: "Ubuntu Studio", 
+                desc: "Configurada de fábrica para músicos, diseñadores y editores de vídeo.", 
+                url: "https://ubuntustudio.org/", 
+                score: 0,
+                tags: { cpu: ['high'], ram: ['high'], gpu: ['amd', 'nvidia'], goal: ['media'] }
+            }
+        ];
 
-            // Pre-seleccionar el dropdown de RAM según la detección
-            if (memory !== "No detectado") {
-                if (memory <= 2) document.getElementById('ram').value = 'low';
-                else if (memory <= 6) document.getElementById('ram').value = 'mid';
-                else document.getElementById('ram').value = 'high';
+        // --- GESTIÓN DEL FORMULARIO ---
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        document.getElementById('next-btn').addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                changeStep(currentStep + 1);
+            } else {
+                showResults();
             }
         });
 
-        // 2. Lógica de recomendación simplificada
-        function calcularRecomendacion() {
-            const ram = document.getElementById('ram').value;
-            const gpu = document.getElementById('gpu').value;
-            
-            let recomendacion = "";
-            let descripcion = "";
-
-            if (ram === 'low') {
-                recomendacion = "antiX Linux o Puppy Linux";
-                descripcion = "Tu hardware es muy limitado. Estas distribuciones ligeras consumen apenas 200MB de RAM y le darán una nueva vida a tu máquina.";
-            } else if (ram === 'mid') {
-                if (gpu === 'nvidia') {
-                    recomendacion = "Linux Mint (XFCE Edition)";
-                    descripcion = "Ideal para equipos medianos. Te recomendamos la edición XFCE por su ligereza y Linux Mint incluye un gestor excelente para activar tus drivers de NVIDIA de forma sencilla.";
-                } else {
-                    recomendacion = "Lubuntu o Linux Mint XFCE";
-                    descripcion = "Perfecto para revivir tu ordenador de ofimática con un entorno moderno pero que apenas consume recursos.";
-                }
-            } else { // RAM Alta
-                if (gpu === 'nvidia') {
-                    recomendacion = "Pop!_OS (NVIDIA ISO)";
-                    descripcion = "Es la distro reina para usuarios con tarjetas NVIDIA. Puedes descargar una versión que ya viene con los drivers listos para jugar o trabajar.";
-                } else {
-                    recomendacion = "Fedora Workstation o Ubuntu";
-                    descripcion = "Tu PC tiene potencia de sobra. Disfrutarás de una experiencia moderna, estable y con el software más actualizado del ecosistema Linux.";
-                }
+        document.getElementById('prev-btn').addEventListener('click', () => {
+            if (currentStep > 1) {
+                changeStep(currentStep - 1);
             }
+        });
 
-            // Mostrar resultados
-            document.getElementById('distroName').innerText = recomendacion;
-            document.getElementById('distroDesc').innerText = descripcion;
-            document.getElementById('resultado').classList.remove('hidden');
+        function changeStep(n) {
+            document.querySelector(`#step-${currentStep}`).classList.remove('active');
+            currentStep = n;
+            document.querySelector(`#step-${currentStep}`).classList.add('active');
+            
+            // Actualizar interfaz
+            document.getElementById('step-indicator').innerText = `Paso ${currentStep} de ${totalSteps}`;
+            document.getElementById('prev-btn').classList.toggle('hidden', currentStep === 1);
+            document.getElementById('next-btn').innerText = (currentStep === totalSteps) ? 'Ver recomendación' : 'Siguiente paso';
+        }
+
+        // --- DETECCIÓN AUTOMÁTICA ---
+        window.onload = () => {
+            const cores = navigator.hardwareConcurrency || 2;
+            const memory = navigator.deviceMemory || 4;
+            
+            document.getElementById('auto-cpu').innerText = cores;
+            document.getElementById('auto-ram').innerText = memory;
+
+            // Auto-selección lógica
+            if (cores >= 8) document.getElementById('cpu-select').value = 'high';
+            else if (cores >= 4) document.getElementById('cpu-select').value = 'mid';
+            else document.getElementById('cpu-select').value = 'low';
+
+            if (memory >= 12) document.getElementById('ram-select').value = 'high';
+            else if (memory >= 6) document.getElementById('ram-select').value = 'mid';
+            else document.getElementById('ram-select').value = 'low';
+        };
+
+        // --- CÁLCULO DE RESULTADOS ---
+        function showResults() {
+            const formData = new FormData(document.getElementById('wizard-form'));
+            const userChoices = {
+                cpu: formData.get('cpu'),
+                ram: formData.get('ram'),
+                gpu: formData.get('gpu'),
+                goal: formData.get('goal')
+            };
+
+            // Reiniciar scores
+            distros.forEach(d => d.score = 0);
+
+            // Algoritmo de puntuación
+            distros.forEach(distro => {
+                if (distro.tags.cpu.includes(userChoices.cpu)) distro.score += 2;
+                if (distro.tags.ram.includes(userChoices.ram)) distro.score += 2;
+                if (distro.tags.gpu.includes(userChoices.gpu)) distro.score += 3;
+                if (distro.tags.goal.includes(userChoices.goal)) distro.score += 5;
+            });
+
+            // Ordenar por puntuación
+            const sorted = distros.sort((a, b) => b.score - a.score);
+            const best = sorted[0];
+
+            // Renderizar UI de resultados
+            document.getElementById('wizard-form').classList.add('hidden');
+            document.getElementById('results-view').classList.remove('hidden');
+
+            document.getElementById('res-name').innerText = best.name;
+            document.getElementById('res-desc').innerText = best.desc;
+            document.getElementById('res-link').href = best.url;
+
+            // Alternativas
+            const altContainer = document.getElementById('alternatives-container');
+            altContainer.innerHTML = '';
+            sorted.slice(1, 4).forEach(alt => {
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700 hover:border-blue-500/50 transition-all";
+                div.innerHTML = `
+                    <span>${alt.name}</span>
+                    <a href="${alt.url}" target="_blank" class="text-blue-400 hover:text-blue-300">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                `;
+                altContainer.appendChild(div);
+            });
         }
     </script>
 </body>
