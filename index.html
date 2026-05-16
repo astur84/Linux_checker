@@ -325,7 +325,14 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'distromatch-ubuntu-v2';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const firebaseConfig = {
+  apiKey: "TU_API_KEY_AQUÍ",
+  authDomain: "TU_AUTH_DOMAIN_AQUÍ",
+  projectId: "TU_PROJECT_ID_AQUÍ",
+  storageBucket: "TU_STORAGE_BUCKET_AQUÍ",
+  messagingSenderId: "TU_MESSAGING_SENDER_ID_AQUÍ",
+  appId: "TU_APP_ID_AQUÍ"
+};
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
